@@ -58,7 +58,7 @@ function updateUI() {
     if (walletBalanceEl) walletBalanceEl.textContent = formatted + " MC";
     if (refCountEl) refCountEl.textContent = referralCount;
     if (refRewardsEl) refRewardsEl.textContent = referralRewardsEarned.toLocaleString('en-US', { minimumFractionDigits: 2 });
-    if (refLinkInput) refLinkInput.value = `https://t.me/MegaCoinBot?start=${telegramId}`;
+    if (refLinkInput) refLinkInput.value = `https://t.me/megacoineasy_bot?start=${telegramId}`;
 }
 
 /* =========================================================
