@@ -1,59 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MegaCoin</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 350px;
-    }
-
-    h1 {
-      color: #f5a623;
-    }
-
-    .coin {
-      font-size: 35px;
-      font-weight: bold;
-    }
-
-    button {
-      background: #f5a623;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MegaCoin</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
+    <div id="app" class="app-container">
+        
+        <!-- Top Header -->
+        <header class="app-header">
+            <div class="user-profile">
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                <div class="user-info">
+                    <span id="username">MegaUser</span>
+                    <span class="rank-badge">VIP 1</span>
+                </div>
+            </div>
+            <div class="balance-display">
+                <i class="fa-solid fa-coins gold-icon"></i>
+                <span id="header-balance">0.00</span>
+            </div>
+        </header>
 
-<div class="card">
-  <h1>🪙 MegaCoin</h1>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- 1. HOME PAGE -->
+            <section id="page-home" class="page active">
+                <div class="hero-card">
+                    <h2>MegaCoin Balance</h2>
+                    <h1 id="home-balance">0.00</h1>
+                    <p class="crypto-sub">10,000 MegaCoin = $1 USD</p>
+                    <div class="home-quick-actions">
+                        <button class="gold-btn-outline" id="nav-wallet-shortcut"><i class="fa-solid fa-wallet"></i> Wallet</button>
+                        <button class="gold-btn" id="streak-btn"><i class="fa-solid fa-fire"></i> Daily Streak</button>
+                    </div>
+                </div>
 
-  <p>Your Balance</p>
-  <div class="coin">0 MC</div>
+                <!-- Invite Section -->
+                <div class="invite-card">
+                    <h3><i class="fa-solid fa-user-plus gold-icon"></i> Invite Friends</h3>
+                    <p>Share your link and earn referral bonuses!</p>
+                    <div class="invite-link-box">
+                        <input type="text" id="ref-link-input" readonly value="https://t.me/MegaCoinBot?start=12345">
+                        <button class="gold-btn" id="copy-ref-btn">Copy Link</button>
+                    </div>
+                    <div class="invite-stats">
+                        <span>Invited: <strong id="ref-count">0</strong> users</span>
+                        <span>Rewards: <strong id="ref-rewards">0.00</strong> MC</span>
+                    </div>
+                </div>
+            </section>
 
-  <br>
+            <!-- 2. MINING PAGE (Customer Service / Promotion) -->
+            <section id="page-mining" class="page">
+                <h2>Customer Service</h2>
+                <div class="service-container">
+                    <div class="service-card">
+                        <i class="fa-solid fa-bullhorn gold-icon"></i>
+                        <div class="service-info">
+                            <h3>Promotion</h3>
+                            <a href="https://t.me/Megacoin15" target="_blank" class="service-link">@Megacoin15</a>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <i class="fa-solid fa-headset gold-icon"></i>
+                        <div class="service-info">
+                            <h3>Customer Support</h3>
+                            <a href="https://t.me/Megacoin16" target="_blank" class="service-link">@Megacoin16</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-  <button>
-    ⛏️ Start Mining
-  </button>
+            <!-- 3. TASK PAGE -->
+            <section id="page-tasks" class="page">
+                <h2>Earn Rewards</h2>
+                <div class="tab-filters">
+                    <button class="filter-btn active" data-task-filter="daily">Daily Tasks</button>
+                    <button class="filter-btn" data-task-filter="social">Social Tasks</button>
+                    <button class="filter-btn" data-task-filter="ads">Watch Ads</button>
+                </div>
+                <div class="tasks-list" id="tasks-container">
+                    <!-- Dynamic Tasks Rendered Here -->
+                </div>
+            </section>
 
-</div>
+            <!-- 4. WALLET PAGE -->
+            <section id="page-wallet" class="page">
+                <h2>Wallet & Withdraw</h2>
+                
+                <div class="wallet-balance-box">
+                    <span>MegaCoin Balance</span>
+                    <h2 id="wallet-balance">0.00 MC</h2>
+                    <p class="crypto-sub">Minimum Withdraw: $5 (50,000 MC)</p>
+                    <button class="gold-btn withdraw-trigger-btn" id="open-withdraw-form">Withdraw</button>
+                </div>
 
+                <!-- Withdraw Form Modal / Card Drawer -->
+                <div id="withdraw-form-container" class="withdraw-form-card hidden">
+                    <h3>Select Payment Method</h3>
+                    <select id="payment-method-select" class="styled-select">
+                        <option value="usdt-bep20">USDT BEP20</option>
+                        <option value="usdt-trc20">USDT TRC20</option>
+                        <option value="cbe">CBE (ETB)</option>
+                        <option value="telebirr">Telebirr (ETB)</option>
+                    </select>
+
+                    <div id="dynamic-withdraw-fields" class="method-form">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Withdraw History Section -->
+                <div class="history-section">
+                    <h3>Withdraw History</h3>
+                    <div class="table-responsive">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Method</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="withdraw-history-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. HISTORY PAGE (Task History) -->
+            <section id="page-history" class="page">
+                <h2>Task History</h2>
+                <div class="tab-filters">
+                    <button class="filter-btn active" data-history-filter="pending">Pending</button>
+                    <button class="filter-btn" data-history-filter="approved">Approved</button>
+                    <button class="filter-btn" data-history-filter="rejected">Rejected</button>
+                </div>
+                <div class="tasks-list" id="history-container">
+                    <!-- Dynamic task history items -->
+                </div>
+            </section>
+
+            <!-- 6. RANK PAGE (Renamed to Task History - Handled as alternate view/alias or dedicated container) -->
+            <section id="page-rank" class="page">
+                <h2>Task History</h2>
+                <div class="tab-filters">
+                    <button class="filter-btn active" data-rank-filter="pending">Pending</button>
+                    <button class="filter-btn" data-rank-filter="approved">Approved</button>
+                    <button class="filter-btn" data-rank-filter="rejected">Rejected</button>
+                </div>
+                <div class="tasks-list" id="rank-history-container">
+                    <!-- Dynamic entries -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-target="home">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-target="mining">
+                <i class="fa-solid fa-headset"></i>
+                <span>Support</span>
+            </button>
+            <button class="nav-item" data-target="tasks">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Tasks</span>
+            </button>
+            <button class="nav-item" data-target="wallet">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Wallet</span>
+            </button>
+            <button class="nav-item" data-target="history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- FIRST WITHDRAWAL RULES POPUP MODAL -->
+    <div id="first-withdraw-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3>Withdrawal Rules</h3>
+            <ul class="rules-list">
+                <li><i class="fa-solid fa-check gold-icon"></i> Minimum withdrawal $5</li>
+                <li><i class="fa-solid fa-check gold-icon"></i> Account verification required</li>
+                <li><i class="fa-solid fa-check gold-icon"></i> Processing time 24-72 hours</li>
+            </ul>
+            <button id="accept-rules-btn" class="gold-btn">I Understand</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
