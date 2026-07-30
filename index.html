@@ -8,99 +8,232 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-color: #0f1115;
-            --card-bg: #181c24;
+            --bg-gradient: linear-gradient(135deg, #0f1115 0%, #1a1f2c 100%);
+            --card-bg: rgba(24, 28, 36, 0.85);
             --accent-color: #f3ba2f;
+            --accent-glow: rgba(243, 186, 47, 0.25);
             --text-color: #ffffff;
             --text-secondary: #9ca3af;
-            --success-color: #10b981;
+            --border-color: rgba(255, 255, 255, 0.08);
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            min-height: 100vh;
         }
+
         .container {
-            padding: 16px;
+            padding: 20px;
             max-width: 480px;
             margin: auto;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
+
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-badge {
+            background: rgba(243, 186, 47, 0.1);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--accent-glow);
+        }
+
         .balance-card {
             background: var(--card-bg);
-            border: 1px solid rgba(243, 186, 47, 0.2);
-            border-radius: 16px;
-            padding: 20px;
+            border: 1px solid var(--accent-glow);
+            border-radius: 20px;
+            padding: 24px;
             text-align: center;
             margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(243, 186, 47, 0.05) 0%, transparent 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .balance-card p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
         .balance-card h1 {
             color: var(--accent-color);
-            margin: 10px 0 0 0;
-            font-size: 32px;
+            margin: 12px 0 4px 0;
+            font-size: 38px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(243, 186, 47, 0.2);
         }
+
+        .withdraw-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease;
         }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 17px;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
         .btn {
-            background: var(--accent-color);
-            color: #000;
+            background: linear-gradient(135deg, #f3ba2f 0%, #e0a812 100%);
+            color: #111;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.3);
+            transition: opacity 0.2s, transform 0.1s;
         }
+
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
         .nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #12151c;
+            background: rgba(15, 17, 21, 0.95);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
         }
+
         .nav-item {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 12px;
             text-align: center;
             cursor: pointer;
+            background: none;
+            border: none;
+            flex: 1;
+            padding: 6px 0;
+            transition: color 0.2s;
         }
+
+        .nav-item span {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
         .nav-item.active {
             color: var(--accent-color);
+            font-weight: 600;
         }
+
         .page {
             display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
+
         .page.active {
             display: block;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         input, select {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: #0f1115;
-            border: 1px solid #374151;
-            border-radius: 8px;
+            padding: 14px;
+            margin: 8px 0 16px 0;
+            background: rgba(15, 17, 21, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             color: #fff;
             box-sizing: border-box;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .banner-box {
+            background: linear-gradient(135deg, rgba(243, 186, 47, 0.15) 0%, rgba(24, 28, 36, 0.6) 100%);
+            border: 1px dashed var(--accent-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -111,82 +244,98 @@
         <div id="home" class="page active">
             <div class="header">
                 <h2>MegaCoin 🪙</h2>
-                <span id="username" style="color: var(--accent-color);">@User</span>
+                <span id="username" class="user-badge">@User</span>
             </div>
+
             <div class="balance-card">
-                <p>AVAILABLE BALANCE</p>
+                <p>Available Balance</p>
                 <h1 id="user-balance">0.00 MC</h1>
-                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Min Withdraw: 100,000 MC ($10)</p>
+                <div class="withdraw-info">Min Withdraw: 100,000 MC ($10)</div>
             </div>
-            <div class="card">
-                <h3>Invite & Earn</h3>
-                <p>Earn +200 MC (0.02$) for every invite!</p>
-                <input type="text" id="ref-link" readonly style="background: #12151c; font-size: 12px;">
-                <button class="btn" onclick="copyRefLink()">Copy Referral Link</button>
-                <p style="font-size: 13px; margin-top: 10px;">Total Invites: <span id="total-ref" style="color: var(--accent-color);">0</span></p>
+
+            <div class="banner-box">
+                <h3 style="margin: 0 0 8px 0; color: var(--accent-color);">Welcome to MegaCoin!</h3>
+                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">Complete daily tasks, watch promos, and accumulate your coins to withdraw real rewards.</p>
             </div>
         </div>
 
         <!-- TASKS PAGE -->
         <div id="tasks" class="page">
-            <h2>Earn Tasks</h2>
+            <div class="header">
+                <h2>Earn Tasks 📋</h2>
+            </div>
             <div class="card">
                 <h3>Join Telegram Channel</h3>
-                <p>Earn +1000 MC</p>
-                <button class="btn" onclick="completeTask('Join Telegram', 1000, 'https://t.me/Megacoin16')">Start Task</button>
+                <p>Join our official channel and stay updated to earn +1000 MC.</p>
+                <button class="btn" onclick="completeTask('Join Telegram', 1000, 'https://t.me/Megacoin16')">Start Task (+1000 MC)</button>
             </div>
             <div class="card">
                 <h3>Watch Promo Video</h3>
-                <p>Earn +500 MC</p>
-                <button class="btn" onclick="completeTask('Watch Video', 500, 'https://t.me/Megacoin15')">Start Task</button>
+                <p>Engage with our promotional content to earn +500 MC.</p>
+                <button class="btn" onclick="completeTask('Watch Video', 500, 'https://t.me/Megacoin15')">Start Task (+500 MC)</button>
             </div>
         </div>
 
         <!-- WALLET PAGE -->
         <div id="wallet" class="page">
-            <h2>Withdrawal Portal</h2>
-            <div class="balance-card">
-                <p>Withdrawable Balance</p>
-                <h1 id="wallet-balance">0.00 MC</h1>
+            <div class="header">
+                <h2>Wallet & Payout 👛</h2>
+            </div>
+            <div class="balance-card" style="padding: 16px; margin-bottom: 16px;">
+                <p>Withdrawable Funds</p>
+                <h1 id="wallet-balance" style="font-size: 28px; margin: 6px 0 0 0;">0.00 MC</h1>
             </div>
             <div class="card">
-                <label>Select Payment Method</label>
+                <label>Payment Method</label>
                 <select id="pay-method">
                     <option value="USDT_BEP20">USDT (BEP20)</option>
                     <option value="USDT_TRC20">USDT (TRC20)</option>
                     <option value="Telebirr">Telebirr</option>
                     <option value="CBE">CBE (Commercial Bank)</option>
                 </select>
+
                 <label>Account / Wallet Address</label>
                 <input type="text" id="pay-account" placeholder="Enter account details...">
+
                 <label>Amount (Min 100,000 MC)</label>
                 <input type="number" id="pay-amount" placeholder="e.g. 100000">
-                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
+
+                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal</button>
             </div>
         </div>
 
         <!-- SUPPORT PAGE -->
         <div id="support" class="page">
-            <h2>Customer Support & Info</h2>
-            <div class="card">
-                <h3>Need Help?</h3>
-                <p>For any issues, account questions or payment assistance, contact our official customer service team.</p>
-                <button class="btn" onclick="window.open('https://t.me/Megacoin16', '_blank')">Contact Support (@Megacoin16)</button>
+            <div class="header">
+                <h2>Support Center 💬</h2>
             </div>
             <div class="card">
-                <h3>Promotion & Advertising</h3>
-                <p>Want to advertise or partner with MegaCoin? Reach out to our promotion managers.</p>
-                <button class="btn" onclick="window.open('https://t.me/Megacoin15', '_blank')">Contact Promotion (@Megacoin15)</button>
+                <h3>Customer Assistance</h3>
+                <p>Having trouble with tasks, balances, or withdrawals? Reach out to our 24/7 support team.</p>
+                <button class="btn" onclick="window.open('https://t.me/Megacoin16', '_blank')">Contact Support</button>
+            </div>
+            <div class="card">
+                <h3>Partnership & Ads</h3>
+                <p>Interested in promoting your project or advertising with MegaCoin?</p>
+                <button class="btn" onclick="window.open('https://t.me/Megacoin15', '_blank')">Contact Promotion</button>
             </div>
         </div>
     </div>
 
     <!-- NAVIGATION BAR -->
     <div class="nav-bar">
-        <div class="nav-item active" onclick="switchPage('home', this)">🏠<br>Home</div>
-        <div class="nav-item" onclick="switchPage('tasks', this)">📋<br>Tasks</div>
-        <div class="nav-item" onclick="switchPage('wallet', this)">👛<br>Wallet</div>
-        <div class="nav-item" onclick="switchPage('support', this)">💬<br>Support</div>
+        <button class="nav-item active" onclick="switchPage('home', this)">
+            <span>🏠</span>Home
+        </button>
+        <button class="nav-item" onclick="switchPage('tasks', this)">
+            <span>📋</span>Tasks
+        </button>
+        <button class="nav-item" onclick="switchPage('wallet', this)">
+            <span>👛</span>Wallet
+        </button>
+        <button class="nav-item" onclick="switchPage('support', this)">
+            <span>💬</span>Support
+        </button>
     </div>
 
     <script>
@@ -201,17 +350,6 @@
         let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
         document.getElementById('username').innerText = '@' + userName;
 
-        // እዚህ ጋር ትክክለኛው የቦት ዩዘርናም ተስተካክሎ ገብቷል (megacoineasy_bot)
-        let refLink = `https://t.me/megacoineasy_bot?start=ref_${userTelegramId}`;
-        document.getElementById('ref-link').value = refLink;
-
-        function copyRefLink() {
-            let copyText = document.getElementById('ref-link');
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            alert('Referral link copied to clipboard!');
-        }
-
         let currentBalance = 0;
 
         async function fetchUserData() {
@@ -225,18 +363,14 @@
                 await supabaseClient.from('users').insert([{ 
                     telegram_id: userTelegramId, 
                     username: userName, 
-                    balance: 0,
-                    total_referrals: 0,
-                    referral_earnings: 0
+                    balance: 0
                 }]);
                 currentBalance = 0;
-                document.getElementById('total-ref').innerText = 0;
             } else {
-                currentBalance = data.balance;
-                document.getElementById('total-ref').innerText = data.total_referrals || 0;
+                currentBalance = data.balance || 0;
             }
-            document.getElementById('user-balance').innerText = currentBalance + " MC";
-            document.getElementById('wallet-balance').innerText = currentBalance + " MC";
+            document.getElementById('user-balance').innerText = currentBalance.toLocaleString() + " MC";
+            document.getElementById('wallet-balance').innerText = currentBalance.toLocaleString() + " MC";
         }
 
         async function completeTask(taskName, reward, link) {
@@ -246,7 +380,7 @@
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
             await supabaseClient.from('task_submissions').insert([{ telegram_id: userTelegramId, task_name: taskName, reward_amount: reward }]);
             
-            alert(`Success! You earned ${reward} MC`);
+            alert(`Success! You earned +${reward} MC`);
             fetchUserData();
         }
 
@@ -255,16 +389,16 @@
             let method = document.getElementById('pay-method').value;
             let account = document.getElementById('pay-account').value;
 
-            if (amount < 100000) {
-                alert('Minimum withdrawal is 100,000 MC ($10)!');
+            if (!amount || amount < 100000) {
+                alert('Minimum withdrawal requirement is 100,000 MC ($10)!');
                 return;
             }
             if (amount > currentBalance) {
-                alert('Insufficient balance!');
+                alert('Insufficient balance in your account!');
                 return;
             }
             if (!account) {
-                alert('Please enter your account details!');
+                alert('Please enter your valid account or wallet details!');
                 return;
             }
 
@@ -278,7 +412,9 @@
             currentBalance -= amount;
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
 
-            alert('Withdrawal request submitted successfully! Contact @Megacoin16 for support.');
+            alert('Withdrawal request submitted successfully! Our team will process it shortly.');
+            document.getElementById('pay-amount').value = '';
+            document.getElementById('pay-account').value = '';
             fetchUserData();
         }
 
