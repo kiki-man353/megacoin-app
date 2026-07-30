@@ -2,211 +2,294 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MegaCoin</title>
-    <!-- Telegram WebApp SDK -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaCoin Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --card-bg: #181c24;
+            --accent-color: #f3ba2f;
+            --text-color: #ffffff;
+            --text-secondary: #9ca3af;
+            --success-color: #10b981;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 70px;
+        }
+        .container {
+            padding: 16px;
+            max-width: 480px;
+            margin: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .balance-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(243, 186, 47, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .balance-card h1 {
+            color: var(--accent-color);
+            margin: 10px 0 0 0;
+            font-size: 32px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .btn {
+            background: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #12151c;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-item {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #0f1115;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-    <div id="app" class="app-container">
-        
-        <!-- Top Header -->
-        <header class="app-header">
-            <div class="user-profile">
-                <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                <div class="user-info">
-                    <span id="username">MegaUser</span>
-                    <span class="rank-badge">VIP 1</span>
-                </div>
+
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <div class="header">
+                <h2>MegaCoin 🪙</h2>
+                <span id="username" style="color: var(--accent-color);">@User</span>
             </div>
-            <div class="balance-display">
-                <i class="fa-solid fa-coins gold-icon"></i>
-                <span id="header-balance">0.00</span>
+            <div class="balance-card">
+                <p>AVAILABLE BALANCE</p>
+                <h1 id="user-balance">0.00 MC</h1>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Min Withdraw: 100,000 MC ($10)</p>
             </div>
-        </header>
+            <div class="card">
+                <h3>Invite & Earn</h3>
+                <p>Earn +200 MC (0.02$) for every invite!</p>
+                <input type="text" id="ref-link" readonly style="background: #12151c; font-size: 12px;">
+                <button class="btn" onclick="copyRefLink()">Copy Referral Link</button>
+                <p style="font-size: 13px; margin-top: 10px;">Total Invites: <span id="total-ref" style="color: var(--accent-color);">0</span></p>
+            </div>
+        </div>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            
-            <!-- 1. HOME PAGE -->
-            <section id="page-home" class="page active">
-                <div class="hero-card">
-                    <h2>MegaCoin Balance</h2>
-                    <h1 id="home-balance">0.00</h1>
-                    <p class="crypto-sub">10,000 MegaCoin = $1 USD</p>
-                    <div class="home-quick-actions">
-                        <button class="gold-btn-outline" id="nav-wallet-shortcut"><i class="fa-solid fa-wallet"></i> Wallet</button>
-                        <button class="gold-btn" id="streak-btn"><i class="fa-solid fa-fire"></i> Daily Streak</button>
-                    </div>
-                </div>
+        <!-- TASKS PAGE -->
+        <div id="tasks" class="page">
+            <h2>Earn Tasks</h2>
+            <div class="card">
+                <h3>Join Telegram Channel</h3>
+                <p>Earn +1000 MC</p>
+                <button class="btn" onclick="completeTask('Join Telegram', 1000, 'https://t.me/Megacoin16')">Start Task</button>
+            </div>
+            <div class="card">
+                <h3>Watch Promo Video</h3>
+                <p>Earn +500 MC</p>
+                <button class="btn" onclick="completeTask('Watch Video', 500, 'https://t.me/Megacoin15')">Start Task</button>
+            </div>
+        </div>
 
-                <!-- Invite Section -->
-                <div class="invite-card">
-                    <h3><i class="fa-solid fa-user-plus gold-icon"></i> Invite Friends</h3>
-                    <p>Share your link and earn referral bonuses!</p>
-                    <div class="invite-link-box">
-                        <input type="text" id="ref-link-input" readonly value="https://t.me/MegaCoinBot?start=12345">
-                        <button class="gold-btn" id="copy-ref-btn">Copy Link</button>
-                    </div>
-                    <div class="invite-stats">
-                        <span>Invited: <strong id="ref-count">0</strong> users</span>
-                        <span>Rewards: <strong id="ref-rewards">0.00</strong> MC</span>
-                    </div>
-                </div>
-            </section>
+        <!-- WALLET PAGE -->
+        <div id="wallet" class="page">
+            <h2>Withdrawal Portal</h2>
+            <div class="balance-card">
+                <p>Withdrawable Balance</p>
+                <h1 id="wallet-balance">0.00 MC</h1>
+            </div>
+            <div class="card">
+                <label>Select Payment Method</label>
+                <select id="pay-method">
+                    <option value="USDT_BEP20">USDT (BEP20)</option>
+                    <option value="USDT_TRC20">USDT (TRC20)</option>
+                    <option value="Telebirr">Telebirr</option>
+                    <option value="CBE">CBE (Commercial Bank)</option>
+                </select>
+                <label>Account / Wallet Address</label>
+                <input type="text" id="pay-account" placeholder="Enter account details...">
+                <label>Amount (Min 100,000 MC)</label>
+                <input type="number" id="pay-amount" placeholder="e.g. 100000">
+                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
+            </div>
+        </div>
 
-            <!-- 2. MINING PAGE (Customer Service / Promotion) -->
-            <section id="page-mining" class="page">
-                <h2>Customer Service</h2>
-                <div class="service-container">
-                    <div class="service-card">
-                        <i class="fa-solid fa-bullhorn gold-icon"></i>
-                        <div class="service-info">
-                            <h3>Promotion</h3>
-                            <a href="https://t.me/Megacoin15" target="_blank" class="service-link">@Megacoin15</a>
-                        </div>
-                    </div>
-                    <div class="service-card">
-                        <i class="fa-solid fa-headset gold-icon"></i>
-                        <div class="service-info">
-                            <h3>Customer Support</h3>
-                            <a href="https://t.me/Megacoin16" target="_blank" class="service-link">@Megacoin16</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 3. TASK PAGE -->
-            <section id="page-tasks" class="page">
-                <h2>Earn Rewards</h2>
-                <div class="tab-filters">
-                    <button class="filter-btn active" data-task-filter="daily">Daily Tasks</button>
-                    <button class="filter-btn" data-task-filter="social">Social Tasks</button>
-                    <button class="filter-btn" data-task-filter="ads">Watch Ads</button>
-                </div>
-                <div class="tasks-list" id="tasks-container">
-                    <!-- Dynamic Tasks Rendered Here -->
-                </div>
-            </section>
-
-            <!-- 4. WALLET PAGE -->
-            <section id="page-wallet" class="page">
-                <h2>Wallet & Withdraw</h2>
-                
-                <div class="wallet-balance-box">
-                    <span>MegaCoin Balance</span>
-                    <h2 id="wallet-balance">0.00 MC</h2>
-                    <p class="crypto-sub">Minimum Withdraw: $5 (50,000 MC)</p>
-                    <button class="gold-btn withdraw-trigger-btn" id="open-withdraw-form">Withdraw</button>
-                </div>
-
-                <!-- Withdraw Form Modal / Card Drawer -->
-                <div id="withdraw-form-container" class="withdraw-form-card hidden">
-                    <h3>Select Payment Method</h3>
-                    <select id="payment-method-select" class="styled-select">
-                        <option value="usdt-bep20">USDT BEP20</option>
-                        <option value="usdt-trc20">USDT TRC20</option>
-                        <option value="cbe">CBE (ETB)</option>
-                        <option value="telebirr">Telebirr (ETB)</option>
-                    </select>
-
-                    <div id="dynamic-withdraw-fields" class="method-form">
-                        <!-- Rendered dynamically -->
-                    </div>
-                </div>
-
-                <!-- Withdraw History Section -->
-                <div class="history-section">
-                    <h3>Withdraw History</h3>
-                    <div class="table-responsive">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Method</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="withdraw-history-body">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. HISTORY PAGE (Task History) -->
-            <section id="page-history" class="page">
-                <h2>Task History</h2>
-                <div class="tab-filters">
-                    <button class="filter-btn active" data-history-filter="pending">Pending</button>
-                    <button class="filter-btn" data-history-filter="approved">Approved</button>
-                    <button class="filter-btn" data-history-filter="rejected">Rejected</button>
-                </div>
-                <div class="tasks-list" id="history-container">
-                    <!-- Dynamic task history items -->
-                </div>
-            </section>
-
-            <!-- 6. RANK PAGE (Renamed to Task History - Handled as alternate view/alias or dedicated container) -->
-            <section id="page-rank" class="page">
-                <h2>Task History</h2>
-                <div class="tab-filters">
-                    <button class="filter-btn active" data-rank-filter="pending">Pending</button>
-                    <button class="filter-btn" data-rank-filter="approved">Approved</button>
-                    <button class="filter-btn" data-rank-filter="rejected">Rejected</button>
-                </div>
-                <div class="tasks-list" id="rank-history-container">
-                    <!-- Dynamic entries -->
-                </div>
-            </section>
-
-        </main>
-
-        <!-- Bottom Navigation Bar -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" data-target="home">
-                <i class="fa-solid fa-house"></i>
-                <span>Home</span>
-            </button>
-            <button class="nav-item" data-target="mining">
-                <i class="fa-solid fa-headset"></i>
-                <span>Support</span>
-            </button>
-            <button class="nav-item" data-target="tasks">
-                <i class="fa-solid fa-list-check"></i>
-                <span>Tasks</span>
-            </button>
-            <button class="nav-item" data-target="wallet">
-                <i class="fa-solid fa-wallet"></i>
-                <span>Wallet</span>
-            </button>
-            <button class="nav-item" data-target="history">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <span>History</span>
-            </button>
-        </nav>
-
-    </div>
-
-    <!-- FIRST WITHDRAWAL RULES POPUP MODAL -->
-    <div id="first-withdraw-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <h3>Withdrawal Rules</h3>
-            <ul class="rules-list">
-                <li><i class="fa-solid fa-check gold-icon"></i> Minimum withdrawal $5</li>
-                <li><i class="fa-solid fa-check gold-icon"></i> Account verification required</li>
-                <li><i class="fa-solid fa-check gold-icon"></i> Processing time 24-72 hours</li>
-            </ul>
-            <button id="accept-rules-btn" class="gold-btn">I Understand</button>
+        <!-- SUPPORT PAGE (ራሱን የቻለ ገጽ) -->
+        <div id="support" class="page">
+            <h2>Customer Support & Info</h2>
+            <div class="card">
+                <h3>Need Help?</h3>
+                <p>For any issues, account questions or payment assistance, contact our official customer service team.</p>
+                <button class="btn" onclick="window.open('https://t.me/Megacoin16', '_blank')">Contact Support (@Megacoin16)</button>
+            </div>
+            <div class="card">
+                <h3>Promotion & Advertising</h3>
+                <p>Want to advertise or partner with MegaCoin? Reach out to our promotion managers.</p>
+                <button class="btn" onclick="window.open('https://t.me/Megacoin15', '_blank')">Contact Promotion (@Megacoin15)</button>
+            </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- NAVIGATION BAR (የተጨመረው Support አይኮን ጋር) -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchPage('home', this)">🏠<br>Home</div>
+        <div class="nav-item" onclick="switchPage('tasks', this)">📋<br>Tasks</div>
+        <div class="nav-item" onclick="switchPage('wallet', this)">👛<br>Wallet</div>
+        <div class="nav-item" onclick="switchPage('support', this)">💬<br>Support</div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://xqxnpdqzsnlmeltyuucg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxeG5wZHF6c25sbWVsdHl1dWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NDI0NjksImV4cCI6MjEwMTAxODQ2OX0.1AYsGB2Pi1vUp1Q9tLCX8qF0zbvh-lFgHpsDBpbUphA';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let userTelegramId = tg.initDataUnsafe?.user?.id || 123456789; 
+        let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
+        document.getElementById('username').innerText = '@' + userName;
+
+        // የሪፈራል ሊንክ ማመንጨት
+        let refLink = `https://t.me/your_bot_username?start=ref_${userTelegramId}`;
+        document.getElementById('ref-link').value = refLink;
+
+        function copyRefLink() {
+            let copyText = document.getElementById('ref-link');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert('Referral link copied to clipboard!');
+        }
+
+        let currentBalance = 0;
+
+        async function fetchUserData() {
+            let { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .single();
+
+            if (!data) {
+                await supabaseClient.from('users').insert([{ 
+                    telegram_id: userTelegramId, 
+                    username: userName, 
+                    balance: 0,
+                    total_referrals: 0,
+                    referral_earnings: 0
+                }]);
+                currentBalance = 0;
+                document.getElementById('total-ref').innerText = 0;
+            } else {
+                currentBalance = data.balance;
+                document.getElementById('total-ref').innerText = data.total_referrals || 0;
+            }
+            document.getElementById('user-balance').innerText = currentBalance + " MC";
+            document.getElementById('wallet-balance').innerText = currentBalance + " MC";
+        }
+
+        async function completeTask(taskName, reward, link) {
+            window.open(link, '_blank');
+            currentBalance += reward;
+            
+            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
+            await supabaseClient.from('task_submissions').insert([{ telegram_id: userTelegramId, task_name: taskName, reward_amount: reward }]);
+            
+            alert(`Success! You earned ${reward} MC`);
+            fetchUserData();
+        }
+
+        async function requestWithdrawal() {
+            let amount = parseFloat(document.getElementById('pay-amount').value);
+            let method = document.getElementById('pay-method').value;
+            let account = document.getElementById('pay-account').value;
+
+            if (amount < 100000) {
+                alert('Minimum withdrawal is 100,000 MC ($10)!');
+                return;
+            }
+            if (amount > currentBalance) {
+                alert('Insufficient balance!');
+                return;
+            }
+            if (!account) {
+                alert('Please enter your account details!');
+                return;
+            }
+
+            await supabaseClient.from('withdrawals').insert([{
+                telegram_id: userTelegramId,
+                amount_mc: amount,
+                payment_method: method,
+                account_detail: account
+            }]);
+
+            currentBalance -= amount;
+            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
+
+            alert('Withdrawal request submitted successfully! Contact @Megacoin16 for support.');
+            fetchUserData();
+        }
+
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        fetchUserData();
+    </script>
 </body>
 </html>
