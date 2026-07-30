@@ -165,7 +165,7 @@
             </div>
         </div>
 
-        <!-- SUPPORT PAGE (ራሱን የቻለ ገጽ) -->
+        <!-- SUPPORT PAGE -->
         <div id="support" class="page">
             <h2>Customer Support & Info</h2>
             <div class="card">
@@ -181,7 +181,7 @@
         </div>
     </div>
 
-    <!-- NAVIGATION BAR (የተጨመረው Support አይኮን ጋር) -->
+    <!-- NAVIGATION BAR -->
     <div class="nav-bar">
         <div class="nav-item active" onclick="switchPage('home', this)">🏠<br>Home</div>
         <div class="nav-item" onclick="switchPage('tasks', this)">📋<br>Tasks</div>
@@ -201,8 +201,8 @@
         let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
         document.getElementById('username').innerText = '@' + userName;
 
-        // የሪፈራል ሊንክ ማመንጨት
-        let refLink = `https://t.me/your_bot_username?start=ref_${userTelegramId}`;
+        // እዚህ ጋር ትክክለኛው የቦት ዩዘርናም ተስተካክሎ ገብቷል (megacoineasy_bot)
+        let refLink = `https://t.me/megacoineasy_bot?start=ref_${userTelegramId}`;
         document.getElementById('ref-link').value = refLink;
 
         function copyRefLink() {
