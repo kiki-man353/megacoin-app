@@ -158,6 +158,10 @@
             box-shadow: 0 6px 20px rgba(243, 186, 47, 0.3);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             letter-spacing: 0.3px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            box-sizing: border-box;
         }
 
         .btn:active {
@@ -177,6 +181,13 @@
         .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--pending-color); border: 1px solid rgba(245, 158, 11, 0.3); }
         .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
         .status-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Support & Promo Card Style */
+        .support-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
         /* Navigation Bar */
         .nav-bar {
@@ -311,6 +322,15 @@
                 <button class="btn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">⚡ Start Earning</button>
                 <button class="btn" style="background: var(--card-bg); color: var(--accent-color); border: 1px solid var(--accent-glow);" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">👛 Withdraw</button>
             </div>
+
+            <!-- Support & Promotion Links -->
+            <div class="card" style="text-align: center; padding: 14px;">
+                <h3 style="font-size: 14px; margin-bottom: 8px;">Official Channels</h3>
+                <div class="support-box">
+                    <a href="https://t.me/Megacoin15" target="_blank" class="btn" style="font-size: 12px; padding: 10px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3);">📢 Promotion</a>
+                    <a href="https://t.me/Megacoin16" target="_blank" class="btn" style="font-size: 12px; padding: 10px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">🎧 Support</a>
+                </div>
+            </div>
         </div>
 
         <!-- TASKS PAGE -->
@@ -321,6 +341,10 @@
             
             <div id="tasks-container">
                 <p style="text-align:center; color:var(--text-secondary);">Loading tasks...</p>
+            </div>
+
+            <div class="card" style="text-align: center; padding: 12px; margin-top: 20px;">
+                <p style="margin: 0; font-size: 12px;">Need help with tasks? Contact <a href="https://t.me/Megacoin16" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: bold;">@Megacoin16</a></p>
             </div>
         </div>
 
@@ -350,6 +374,10 @@
 
                 <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
             </div>
+
+            <div class="card" style="text-align: center; padding: 12px;">
+                <p style="margin: 0; font-size: 12px;">Withdrawal issues? Reach out via <a href="https://t.me/Megacoin16" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: bold;">Customer Support</a></p>
+            </div>
         </div>
 
         <!-- HISTORY PAGE -->
@@ -365,6 +393,10 @@
 
             <div id="history-tasks-list"></div>
             <div id="history-withdrawals-list" style="display: none;"></div>
+
+            <div class="card" style="text-align: center; padding: 12px; margin-top: 15px;">
+                <p style="margin: 0; font-size: 12px;">Join <a href="https://t.me/Megacoin15" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: bold;">@Megacoin15</a> for updates &amp; promos!</p>
+            </div>
         </div>
     </div>
 
