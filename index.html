@@ -8,13 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f1115 0%, #1a1f2c 100%);
-            --card-bg: rgba(24, 28, 36, 0.85);
+            --bg-gradient: linear-gradient(135deg, #07090e 0%, #121824 50%, #1a1f2c 100%);
+            --card-bg: rgba(22, 27, 34, 0.75);
             --accent-color: #f3ba2f;
-            --accent-glow: rgba(243, 186, 47, 0.25);
+            --accent-gradient: linear-gradient(135deg, #f3ba2f 0%, #ffdf7e 50%, #d49e1e 100%);
+            --accent-glow: rgba(243, 186, 47, 0.35);
             --text-color: #ffffff;
             --text-secondary: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
             --success-color: #10b981;
             --pending-color: #f59e0b;
             --danger-color: #ef4444;
@@ -26,12 +27,12 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
             min-height: 100vh;
         }
 
         .container {
-            padding: 16px;
+            padding: 18px;
             max-width: 480px;
             margin: auto;
         }
@@ -42,68 +43,91 @@
             align-items: center;
             margin-bottom: 20px;
             background: var(--card-bg);
-            padding: 12px 16px;
-            border-radius: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
         .header h2 {
             margin: 0;
-            font-size: 18px;
+            font-size: 20px;
             color: var(--accent-color);
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
         .user-badge {
-            background: rgba(243, 186, 47, 0.1);
+            background: rgba(243, 186, 47, 0.12);
             color: var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 25px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             border: 1px solid var(--accent-glow);
+            box-shadow: 0 0 15px rgba(243, 186, 47, 0.1);
         }
 
         .balance-card {
             background: var(--card-bg);
             border: 1px solid var(--accent-glow);
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 22px;
+            padding: 26px 20px;
             text-align: center;
-            margin-bottom: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
 
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(243, 186, 47, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
         .balance-card p {
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         .balance-card h1 {
             color: var(--accent-color);
-            margin: 8px 0 4px 0;
-            font-size: 34px;
-            font-weight: 700;
-            text-shadow: 0 2px 10px rgba(243, 186, 47, 0.2);
+            margin: 10px 0 6px 0;
+            font-size: 38px;
+            font-weight: 800;
+            text-shadow: 0 0 25px rgba(243, 186, 47, 0.3);
         }
 
         .conversion-text {
             font-size: 12px;
             color: var(--text-secondary);
+            opacity: 0.8;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 16px;
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(243, 186, 47, 0.3);
         }
 
         .card h3 {
@@ -111,57 +135,63 @@
             margin-bottom: 6px;
             font-size: 16px;
             color: #fff;
+            font-weight: 700;
         }
 
         .card p {
             color: var(--text-secondary);
             font-size: 13px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            line-height: 1.4;
         }
 
         .btn {
-            background: linear-gradient(135deg, #f3ba2f 0%, #e0a812 100%);
-            color: #111;
+            background: var(--accent-gradient);
+            color: #0b0d12;
             border: none;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 13px 20px;
+            border-radius: 14px;
+            font-weight: 800;
             font-size: 14px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.25);
-            transition: transform 0.1s;
+            box-shadow: 0 6px 20px rgba(243, 186, 47, 0.3);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            letter-spacing: 0.3px;
         }
 
         .btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
+            box-shadow: 0 2px 10px rgba(243, 186, 47, 0.2);
         }
 
         .status-badge {
-            padding: 4px 10px;
-            border-radius: 8px;
+            padding: 5px 12px;
+            border-radius: 10px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
             display: inline-block;
+            letter-spacing: 0.5px;
         }
         .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--pending-color); border: 1px solid rgba(245, 158, 11, 0.3); }
         .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
         .status-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        /* Navigation Bar (4 items now) */
+        /* Navigation Bar */
         .nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 17, 21, 0.95);
+            background: rgba(11, 13, 18, 0.92);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0;
+            padding: 10px 0;
             border-top: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .nav-item {
@@ -174,23 +204,30 @@
             border: none;
             flex: 1;
             padding: 4px 0;
-            transition: color 0.2s;
+            transition: color 0.2s ease, transform 0.2s ease;
+            font-weight: 500;
         }
 
         .nav-item span {
-            font-size: 18px;
+            font-size: 20px;
             display: block;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
+            transition: transform 0.2s ease;
         }
 
         .nav-item.active {
             color: var(--accent-color);
-            font-weight: 600;
+            font-weight: 700;
+        }
+
+        .nav-item.active span {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 8px rgba(243, 186, 47, 0.5));
         }
 
         .page {
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .page.active {
@@ -198,55 +235,60 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            margin: 6px 0 14px 0;
-            background: rgba(15, 17, 21, 0.8);
+            padding: 13px 15px;
+            margin: 8px 0 16px 0;
+            background: rgba(11, 13, 18, 0.85);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             color: #fff;
             box-sizing: border-box;
-            font-size: 13px;
+            font-size: 14px;
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         input:focus, select:focus {
             border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(243, 186, 47, 0.2);
         }
 
         label {
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         /* Tabs inside History */
         .tab-header {
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 18px;
         }
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             text-align: center;
+            transition: all 0.2s ease;
         }
         .tab-btn.active {
-            background: var(--accent-color);
-            color: #111;
-            border-color: var(--accent-color);
+            background: var(--accent-gradient);
+            color: #0b0d12;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.25);
         }
     </style>
 </head>
@@ -266,19 +308,19 @@
                 <div class="conversion-text">Conversion Rate: 100 MC = $1.00 USD</div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <div style="display: flex; gap: 12px; margin-bottom: 18px;">
                 <button class="btn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">⚡ Start Earning</button>
                 <button class="btn" style="background: var(--card-bg); color: var(--accent-color); border: 1px solid var(--accent-glow);" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">👛 Withdraw</button>
             </div>
 
             <div class="card">
                 <h3>Daily Login Reward</h3>
-                <p>Claim free +10 MegaCoins every 24h</p>
+                <p>Claim free +10 MegaCoins every day</p>
                 <button class="btn" id="daily-btn" onclick="claimDaily()">Claim 10 MC</button>
             </div>
         </div>
 
-        <!-- TASKS PAGE (Only 1 Task left) -->
+        <!-- TASKS PAGE -->
         <div id="tasks" class="page">
             <div class="header">
                 <h2>Earn Tasks 📋</h2>
@@ -337,7 +379,7 @@
         </div>
     </div>
 
-    <!-- NAVIGATION BAR (Without Invite) -->
+    <!-- NAVIGATION BAR -->
     <div class="nav-bar">
         <button class="nav-item active" onclick="switchPage('home', this)">
             <span>🏠</span>Home
@@ -388,7 +430,23 @@
             document.getElementById('wallet-balance').innerText = currentBalance.toFixed(2) + " MC";
 
             checkDailyStatus();
+            checkTaskStatus();
             fetchHistory();
+        }
+
+        async function checkTaskStatus() {
+            let taskName = 'Join Telegram Channel';
+            let { data } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', taskName)
+                .single();
+
+            let actionDiv = document.getElementById('task-action-1');
+            if (data && data.status === 'approved') {
+                actionDiv.innerHTML = `<button class="btn" style="background: rgba(16, 185, 129, 0.2); color: var(--success-color); border: 1px solid var(--success-color); cursor: default; box-shadow: none;" disabled>✅ Completed</button>`;
+            }
         }
 
         async function completeInstantTask(taskName, reward, link) {
@@ -403,6 +461,7 @@
 
             if (existing) {
                 alert('You have already submitted this task!');
+                checkTaskStatus();
                 return;
             }
 
@@ -431,13 +490,12 @@
             let taskListHTML = '';
             if (tasks && tasks.length > 0) {
                 tasks.forEach(t => {
-                    // Daily claimዎችን ከ task ዝርዝር ለየት ባለ መልኩ ማሳየት ወይም ማለፍ ይቻላል፣ እዚህ ግን በታሪክ ውስጥ ይታያሉ
                     let statusClass = 'status-pending';
                     if (t.status === 'approved') statusClass = 'status-approved';
                     if (t.status === 'rejected') statusClass = 'status-rejected';
 
                     taskListHTML += `
-                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
                             <div>
                                 <h3 style="margin:0; font-size:14px;">${t.task_name}</h3>
                                 <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">+${t.reward_amount} MC</p>
@@ -449,7 +507,7 @@
                     `;
                 });
             } else {
-                taskListHTML = '<p style="text-align:center; color:var(--text-secondary);">No task history found.</p>';
+                taskListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No task history found.</p>';
             }
             document.getElementById('history-tasks-list').innerHTML = taskListHTML;
 
@@ -463,7 +521,7 @@
             if (withdrawals && withdrawals.length > 0) {
                 withdrawals.forEach(w => {
                     wdListHTML += `
-                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
                             <div>
                                 <h3 style="margin:0; font-size:14px;">Withdrawal (${w.payment_method})</h3>
                                 <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
@@ -475,7 +533,7 @@
                     `;
                 });
             } else {
-                wdListHTML = '<p style="text-align:center; color:var(--text-secondary);">No withdrawal history found.</p>';
+                wdListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No withdrawal history found.</p>';
             }
             document.getElementById('history-withdrawals-list').innerHTML = wdListHTML;
         }
@@ -514,42 +572,57 @@
             fetchUserData();
         }
 
-        // 24 Hours Daily Check-in Logic
         async function checkDailyStatus() {
+            let today = new Date().toISOString().split('T')[0];
+            let taskName = `Daily Check-in (${today})`;
+
             let { data } = await supabaseClient
                 .from('task_submissions')
-                .select('created_at')
+                .select('*')
                 .eq('telegram_id', userTelegramId)
-                .eq('task_name', 'Daily Check-in')
-                .order('created_at', { ascending: false })
-                .limit(1);
+                .eq('task_name', taskName)
+                .single();
 
             let btn = document.getElementById('daily-btn');
-            if (data && data.length > 0) {
-                let lastClaimTime = new Date(data[0].created_at).getTime();
-                let now = new Date().getTime();
-                let diffHours = (now - lastClaimTime) / (1000 * 60 * 60);
-
-                if (diffHours < 24) {
-                    let hoursLeft = Math.ceil(24 - diffHours);
-                    btn.innerText = `Already Claimed (Next in ${hoursLeft}h)`;
-                    btn.style.opacity = '0.6';
-                    btn.disabled = true;
-                    return;
-                }
+            if (data) {
+                btn.innerText = '✅ Already Claimed Today';
+                btn.style.opacity = '0.6';
+                btn.style.background = 'rgba(16, 185, 129, 0.2)';
+                btn.style.color = 'var(--success-color)';
+                btn.style.boxShadow = 'none';
+                btn.disabled = true;
+            } else {
+                btn.innerText = 'Claim 10 MC';
+                btn.style.opacity = '1';
+                btn.style.background = 'var(--accent-gradient)';
+                btn.style.color = '#0b0d12';
+                btn.style.boxShadow = '0 6px 20px rgba(243, 186, 47, 0.3)';
+                btn.disabled = false;
             }
-            btn.innerText = 'Claim 10 MC';
-            btn.style.opacity = '1';
-            btn.disabled = false;
         }
 
         async function claimDaily() {
+            let today = new Date().toISOString().split('T')[0];
+            let taskName = `Daily Check-in (${today})`;
             let btn = document.getElementById('daily-btn');
             if(btn.disabled) return;
 
+            let { data: existing } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', taskName)
+                .single();
+
+            if (existing) {
+                alert('You have already claimed today!');
+                checkDailyStatus();
+                return;
+            }
+
             await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
-                task_name: 'Daily Check-in', 
+                task_name: taskName, 
                 reward_amount: 10,
                 proof_text: 'Daily Claim',
                 status: 'approved'
