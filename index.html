@@ -330,7 +330,7 @@
                 <h3>Join Telegram Channel</h3>
                 <p>Subscribe to official MegaCoin news feed (+200 MC)</p>
                 <div id="task-action-1">
-                    <button class="btn" onclick="completeInstantTask('Join Telegram Channel', 15, 'https://t.me/megacoin_task')">Start Task</button>
+                    <button class="btn" onclick="completeInstantTask('Join Telegram Channel', 200, 'https://t.me/megacoin_task')">Start Task</button>
                 </div>
             </div>
         </div>
@@ -414,7 +414,7 @@
                 .from('users')
                 .select('*')
                 .eq('telegram_id', userTelegramId)
-                .single();
+                .maybeSingle();
 
             if (!data) {
                 await supabaseClient.from('users').insert([{ 
@@ -441,31 +441,31 @@
                 .select('*')
                 .eq('telegram_id', userTelegramId)
                 .eq('task_name', taskName)
-                .single();
+                .maybeSingle();
 
             let actionDiv = document.getElementById('task-action-1');
-            if (data && data.status === 'approved') {
+            if (data && (data.status === 'approved' || data.status === 'pending')) {
                 actionDiv.innerHTML = `<button class="btn" style="background: rgba(16, 185, 129, 0.2); color: var(--success-color); border: 1px solid var(--success-color); cursor: default; box-shadow: none;" disabled>✅ Completed</button>`;
             }
         }
 
         async function completeInstantTask(taskName, reward, link) {
-            window.open(link, '_blank');
-            
             let { data: existing } = await supabaseClient
                 .from('task_submissions')
                 .select('*')
                 .eq('telegram_id', userTelegramId)
                 .eq('task_name', taskName)
-                .single();
+                .maybeSingle();
 
             if (existing) {
-                alert('You have already submitted this task!');
+                alert('You have already completed or submitted this task!');
                 checkTaskStatus();
                 return;
             }
 
-            await supabaseClient.from('task_submissions').insert([{ 
+            window.open(link, '_blank');
+
+            let { error: insertError } = await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
                 task_name: taskName, 
                 reward_amount: reward,
@@ -473,10 +473,16 @@
                 status: 'approved'
             }]);
 
+            if (insertError) {
+                alert('Error completing task. Please try again.');
+                return;
+            }
+
             currentBalance += reward;
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
 
             alert(`Success! +${reward} MC added.`);
+            checkTaskStatus();
             fetchUserData();
         }
 
@@ -581,7 +587,7 @@
                 .select('*')
                 .eq('telegram_id', userTelegramId)
                 .eq('task_name', taskName)
-                .single();
+                .maybeSingle();
 
             let btn = document.getElementById('daily-btn');
             if (data) {
@@ -612,7 +618,7 @@
                 .select('*')
                 .eq('telegram_id', userTelegramId)
                 .eq('task_name', taskName)
-                .single();
+                .maybeSingle();
 
             if (existing) {
                 alert('You have already claimed today!');
