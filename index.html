@@ -470,8 +470,9 @@
 
                 if (sub) {
                     let st = (sub.status || '').toLowerCase();
-                    if (st === 'approved' || st === 'pending') {
-                        btnHtml = `<button class="btn" style="background: rgba(16, 185, 129, 0.2); color: var(--success-color); border: 1px solid var(--success-color); cursor: default; box-shadow: none;" disabled>✅ ${st.toUpperCase()}</button>`;
+                    if (st === 'approved' || st === 'pending' || st === 'rejected') {
+                        let statusColor = st === 'approved' ? 'var(--success-color)' : (st === 'pending' ? 'var(--pending-color)' : 'var(--danger-color)');
+                        btnHtml = `<button class="btn" style="background: rgba(255, 255, 255, 0.05); color: ${statusColor}; border: 1px solid ${statusColor}; cursor: default; box-shadow: none;" disabled>📌 ${st.toUpperCase()}</button>`;
                     }
                 }
 
@@ -494,24 +495,23 @@
                 window.open(link, '_blank');
             }
 
+            // Status ዛሬ ጀምሮ PENDING ሆኖ እንዲገባ ይደረጋል (አድሚን ሲያጸድቀው ሬዋርዱ ይጨመራል)
             let { error: insertError } = await supabaseClient.from('task_submissions').insert([{ 
-                telegram_id: userTelegramId, 
+                telegram_id: userTelegramId,
+                username: userName,
                 task_name: taskName, 
                 reward_amount: reward,
-                status: 'APPROVED'
+                status: 'PENDING'
             }]);
 
             if (insertError) {
-                alert('Error completing task: ' + insertError.message);
+                alert('Error submitting task: ' + insertError.message);
                 return;
             }
 
-            currentBalance += reward;
-            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
-
-            alert(`Success! +${reward} MC added.`);
+            alert(`Task submitted successfully! Waiting for admin approval.`);
             loadTasks();
-            fetchUserData();
+            fetchHistory();
         }
 
         async function fetchHistory() {
