@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaCoin Advanced Admin Panel</title>
+    <title>MegaCoin Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -22,45 +23,40 @@
             background: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 0;
+            padding-bottom: 70px;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 500px;
             margin: auto;
+            padding: 15px;
         }
 
-        h2 {
-            color: var(--accent-color);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .tab-header {
+        .header {
             display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
+            justify-content: space-between;
+            align-items: center;
             background: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            white-space: nowrap;
+            margin-bottom: 15px;
         }
 
-        .tab-btn.active {
-            background: var(--accent-color);
+        .balance-card {
+            background: linear-gradient(135deg, #f3ba2f 0%, #d97706 100%);
             color: #0b0d12;
-            border-color: transparent;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(243, 186, 47, 0.2);
+        }
+
+        .balance-card h1 {
+            margin: 5px 0 0 0;
+            font-size: 32px;
         }
 
         .card {
@@ -69,63 +65,70 @@
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .card p {
-            margin: 5px 0;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .card p b {
-            color: var(--text-color);
-        }
-
-        .actions {
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 8px;
-            margin-top: 10px;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            font-weight: bold;
         }
 
         .btn {
-            flex: 1;
-            padding: 8px;
+            background: var(--accent-color);
+            color: #0b0d12;
             border: none;
-            border-radius: 6px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 12px;
+            margin-top: 10px;
         }
 
-        .btn-approve { background: var(--success-color); color: white; }
-        .btn-reject { background: var(--danger-color); color: white; }
-        .btn-edit { background: #3b82f6; color: white; }
-
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .form-group label {
-            display: block;
             font-size: 12px;
             color: var(--text-secondary);
+            display: block;
             margin-bottom: 4px;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             background: #0f172a;
             border: 1px solid var(--border-color);
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             box-sizing: border-box;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 3px 6px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-size: 10px;
             font-weight: bold;
@@ -135,41 +138,96 @@
         .status-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-rejected { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
-        .empty-msg { text-align: center; color: var(--text-secondary); margin-top: 30px; }
+        .tab-header {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .sub-tab {
+            flex: 1;
+            padding: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .sub-tab.active {
+            background: var(--accent-color);
+            color: #0b0d12;
+            font-weight: bold;
+            border-color: transparent;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>🛡️ MegaCoin Admin Panel</h2>
-
-        <div class="tab-header">
-            <div class="tab-btn active" onclick="switchTab('withdrawals')">Withdrawals</div>
-            <div class="tab-btn" onclick="switchTab('tasks')">Task Submissions</div>
-            <div class="tab-btn" onclick="switchTab('users')">Manage Users</div>
-            <div class="tab-btn" onclick="switchTab('add_task')">Add New Task</div>
+        <div class="header">
+            <span id="userName">Loading user...</span>
+            <span style="font-size: 12px; color: var(--accent-color);" id="userId">ID: ...</span>
         </div>
 
-        <div id="section-withdrawals"><div id="list-withdrawals">Loading...</div></div>
-        <div id="section-tasks" style="display: none;"><div id="list-tasks">Loading...</div></div>
-        <div id="section-users" style="display: none;"><div id="list-users">Loading...</div></div>
-        
-        <div id="section-add_task" style="display: none;" class="card">
-            <h3>Create New Task</h3>
-            <div class="form-group">
-                <label>Task Name</label>
-                <input type="text" id="newTaskName" placeholder="e.g., Join Telegram Channel">
+        <!-- HOME SECTION -->
+        <div id="sec-home" class="section">
+            <div class="balance-card">
+                <span>Total Balance</span>
+                <h1 id="userBalance">0.00 MC</h1>
             </div>
-            <div class="form-group">
-                <label>Reward Amount (MC)</label>
-                <input type="number" id="newTaskReward" placeholder="e.g., 50">
+            <div class="card">
+                <h3>Welcome to MegaCoin!</h3>
+                <p style="color: var(--text-secondary); font-size: 13px;">Complete tasks, earn MegaCoins, and withdraw your earnings easily.</p>
             </div>
-            <div class="form-group">
-                <label>Task Link / Details</label>
-                <input type="text" id="newTaskLink" placeholder="https://t.me/...">
-            </div>
-            <button class="btn btn-approve" onclick="createTask()">Publish Task</button>
         </div>
+
+        <!-- TASKS SECTION -->
+        <div id="sec-tasks" class="section" style="display: none;">
+            <h3>Available Tasks</h3>
+            <div id="taskList">Loading tasks...</div>
+        </div>
+
+        <!-- WALLET SECTION -->
+        <div id="sec-wallet" class="section" style="display: none;">
+            <h3>Withdraw MegaCoin</h3>
+            <div class="card">
+                <div class="form-group">
+                    <label>Amount (MC)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="withdrawMethod">
+                        <option value="USDT_BEP20">USDT (BEP20)</option>
+                        <option value="Telebirr">Telebirr</option>
+                        <option value="CBE">Commercial Bank of Ethiopia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Account Detail / Wallet Address</label>
+                    <input type="text" id="withdrawDetail" placeholder="Account number or wallet">
+                </div>
+                <button class="btn" onclick="submitWithdrawal()">Request Withdrawal</button>
+            </div>
+        </div>
+
+        <!-- HISTORY SECTION -->
+        <div id="sec-history" class="section" style="display: none;">
+            <div class="tab-header">
+                <div class="sub-tab active" onclick="switchHistoryTab('tasks', this)">Task Submissions</div>
+                <div class="sub-tab" onclick="switchHistoryTab('withdrawals', this)">Withdrawal Logs</div>
+            </div>
+            <div id="historyContent">Loading history...</div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchSection('home', this)">🏠<br>Home</div>
+        <div class="nav-item" onclick="switchSection('tasks', this)">📋<br>Tasks</div>
+        <div class="nav-item" onclick="switchSection('wallet', this)">👛<br>Wallet</div>
+        <div class="nav-item" onclick="switchSection('history', this)">🕒<br>History</div>
     </div>
 
     <script>
@@ -177,144 +235,161 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxeG5wZHF6c25sbWVsdHl1dWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NDI0NjksImV4cCI6MjEwMTAxODQ2OX0.1AYsGB2Pi1vUp1Q9tLCX8qF0zbvh-lFgHpsDBpbUphA';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function loadWithdrawals() {
-            let { data } = await supabaseClient.from('withdrawals').select('*').order('created_at', { ascending: false });
-            let html = '';
-            if (data && data.length > 0) {
-                for (let w of data) {
-                    let currentStatus = (w.status || 'pending').toLowerCase();
-                    let recordId = w.id;
-                    
-                    let userUname = 'N/A';
-                    let { data: uData } = await supabaseClient.from('users').select('username').eq('telegram_id', w.telegram_id).single();
-                    if (uData && uData.username) { userUname = uData.username; }
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-                    html += `<div class="card">
-                        <p><b>Username:</b> @${userUname}</p>
-                        <p><b>User ID:</b> ${w.telegram_id}</p>
-                        <p><b>Amount:</b> ${w.amount_mc} MC</p>
-                        <p><b>Method:</b> ${w.payment_method} (${w.account_detail})</p>
-                        <p><b>Status:</b> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
-                        ${currentStatus === 'pending' ? `
-                            <div class="actions">
-                                <button class="btn btn-approve" onclick="updateStatus('withdrawals', ${recordId}, 'approved')">Approve</button>
-                                <button class="btn btn-reject" onclick="updateStatus('withdrawals', ${recordId}, 'rejected')">Reject</button>
-                            </div>
-                        ` : ''}
-                    </div>`;
+        // Test user fallback if opened outside Telegram
+        let user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : {
+            id: 7450378467,
+            first_name: "Test",
+            username: "Megacoin15"
+        };
+
+        let telegram_id = user.id;
+        let username = user.username || user.first_name || "User";
+        let currentBalance = 0;
+        let activeHistoryTab = 'tasks';
+
+        document.getElementById('userName').innerText = '@' + username;
+        document.getElementById('userId').innerText = 'ID: ' + telegram_id;
+
+        async function initUser() {
+            let { data, error } = await supabaseClient.from('users').select('*').eq('telegram_id', telegram_id).single();
+            if (!data) {
+                await supabaseClient.from('users').insert([{ telegram_id: telegram_id, username: username, balance: 0 }]);
+                currentBalance = 0;
+            } else {
+                currentBalance = data.balance;
+                // Update username if changed
+                if(data.username !== username) {
+                    await supabaseClient.from('users').update({ username: username }).eq('telegram_id', telegram_id);
                 }
-            } else { html = '<div class="empty-msg">No withdrawals found.</div>'; }
-            document.getElementById('list-withdrawals').innerHTML = html;
+            }
+            document.getElementById('userBalance').innerText = currentBalance.toLocaleString() + ' MC';
+            loadTasks();
         }
 
         async function loadTasks() {
-            let { data } = await supabaseClient.from('task_submissions').select('*').order('created_at', { ascending: false });
+            let { data } = await supabaseClient.from('tasks').select('*').eq('status', 'active');
             let html = '';
             if (data && data.length > 0) {
-                for (let t of data) {
-                    let currentStatus = (t.status || 'pending').toLowerCase();
-                    let recordId = t.id;
-                    
-                    let userUname = 'N/A';
-                    let { data: uData } = await supabaseClient.from('users').select('username').eq('telegram_id', t.telegram_id).single();
-                    if (uData && uData.username) { userUname = uData.username; }
-
+                data.forEach(t => {
                     html += `<div class="card">
-                        <p><b>Username:</b> @${userUname}</p>
-                        <p><b>User ID:</b> ${t.telegram_id}</p>
-                        <p><b>Task:</b> ${t.task_name} (+${t.reward_amount} MC)</p>
-                        <p><b>Status:</b> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
-                        ${currentStatus === 'pending' ? `
-                            <div class="actions">
-                                <button class="btn btn-approve" onclick="updateStatus('task_submissions', ${recordId}, 'approved')">Approve</button>
-                                <button class="btn btn-reject" onclick="updateStatus('task_submissions', ${recordId}, 'rejected')">Reject</button>
-                            </div>
-                        ` : ''}
-                    </div>`;
-                }
-            } else { html = '<div class="empty-msg">No submissions found.</div>'; }
-            document.getElementById('list-tasks').innerHTML = html;
-        }
-
-        async function loadUsers() {
-            let { data } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
-            let html = '';
-            if (data && data.length > 0) {
-                data.forEach(u => {
-                    let rowId = u.id || u.telegram_id;
-                    html += `<div class="card">
-                        <p><b>Username:</b> @${u.username || 'N/A'}</p>
-                        <p><b>Telegram ID:</b> ${u.telegram_id}</p>
-                        <p><b>Balance:</b> <span style="color:var(--accent-color);">${u.balance} MC</span></p>
-                        <div class="actions">
-                            <input type="number" id="bal_${rowId}" placeholder="New Balance" style="flex:1; padding:5px; background:#0f172a; border:1px solid #333; color:#fff; border-radius:4px;">
-                            <button class="btn btn-edit" onclick="updateBalance('${rowId}', ${u.id ? 'true' : 'false'})">Update Balance</button>
-                        </div>
+                        <p><b>${t.task_name}</b></p>
+                        <p style="color:var(--accent-color); font-size:13px;">Reward: +${t.reward} MC</p>
+                        <button class="btn" onclick="completeTask('${t.task_name}', ${t.reward}, '${t.link || '#'}')">Start / Verify Task</button>
                     </div>`;
                 });
-            } else { html = '<div class="empty-msg">No users found.</div>'; }
-            document.getElementById('list-users').innerHTML = html;
+            } else { html = '<p style="text-align:center; color:var(--text-secondary);">No active tasks available.</p>'; }
+            document.getElementById('taskList').innerHTML = html;
         }
 
-        async function updateBalance(identifier, isById) {
-            let newVal = document.getElementById('bal_' + identifier).value;
-            if(newVal === '') return alert('Please enter amount');
+        async function completeTask(taskName, reward, link) {
+            if(link && link !== '#') { window.open(link, '_blank'); }
             
-            let query = supabaseClient.from('users').update({ balance: parseFloat(newVal) });
-            if(isById) { query = query.eq('id', identifier); } 
-            else { query = query.eq('telegram_id', identifier); }
+            // Check if already submitted
+            let { data } = await supabaseClient.from('task_submissions').select('*').eq('telegram_id', telegram_id).eq('task_name', taskName).single();
+            if(data) {
+                alert('You have already submitted this task!');
+                return;
+            }
 
-            let { error } = await query;
-            if(error) { alert('Error: ' + error.message); } 
-            else { alert('Balance updated successfully!'); loadUsers(); }
-        }
-
-        async function createTask() {
-            let name = document.getElementById('newTaskName').value;
-            let reward = document.getElementById('newTaskReward').value;
-            let link = document.getElementById('newTaskLink').value;
-            if(!name || !reward) return alert('Fill required fields');
-            
-            let { error } = await supabaseClient.from('tasks').insert([{ 
-                task_name: name, 
-                reward: parseFloat(reward), 
-                link: link, 
-                status: 'active' 
+            let { error } = await supabaseClient.from('task_submissions').insert([{
+                telegram_id: telegram_id,
+                task_name: taskName,
+                reward_amount: reward,
+                status: 'pending'
             }]);
-            
+
             if(error) {
-                alert('Error creating task: ' + error.message);
-            } else { 
-                alert('Task published successfully!'); 
-                document.getElementById('newTaskName').value = ''; 
-                document.getElementById('newTaskReward').value = ''; 
-                document.getElementById('newTaskLink').value = '';
+                alert('Error submitting task: ' + error.message);
+            } else {
+                alert('Task submitted successfully! Waiting for admin approval.');
+                loadHistory();
             }
         }
 
-        async function updateStatus(table, recordId, status) {
-            let { error } = await supabaseClient.from(table).update({ status: status }).eq('id', recordId);
-            if(error) { 
-                alert('Error updating status: ' + error.message); 
-            } else { 
-                alert('Updated to ' + status); 
-                table === 'withdrawals' ? loadWithdrawals() : loadTasks(); 
+        async function submitWithdrawal() {
+            let amount = parseFloat(document.getElementById('withdrawAmount').value);
+            let method = document.getElementById('withdrawMethod').value;
+            let detail = document.getElementById('withdrawDetail').value;
+
+            if(!amount || amount <= 0) return alert('Please enter a valid amount');
+            if(!detail) return alert('Please enter account details or wallet address');
+            if(amount > currentBalance) return alert('Insufficient balance');
+
+            let { error } = await supabaseClient.from('withdrawals').insert([{
+                telegram_id: telegram_id,
+                amount_mc: amount,
+                payment_method: method,
+                account_detail: detail,
+                status: 'pending'
+            }]);
+
+            if(error) {
+                alert('Error requesting withdrawal: ' + error.message);
+            } else {
+                // Deduct balance temporarily or wait for admin? Standard practice: deduct or hold. Let's deduct:
+                let newBal = currentBalance - amount;
+                await supabaseClient.from('users').update({ balance: newBal }).eq('telegram_id', telegram_id);
+                currentBalance = newBal;
+                document.getElementById('userBalance').innerText = currentBalance.toLocaleString() + ' MC';
+                
+                alert('Withdrawal request submitted successfully!');
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('withdrawDetail').value = '';
+                switchSection('history', document.querySelectorAll('.nav-item')[3]);
             }
         }
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            ['withdrawals', 'tasks', 'users', 'add_task'].forEach(t => document.getElementById('section-' + t).style.display = 'none');
+        async function loadHistory() {
+            let html = '';
+            if(activeHistoryTab === 'tasks') {
+                let { data } = await supabaseClient.from('task_submissions').select('*').eq('telegram_id', telegram_id).order('created_at', { ascending: false });
+                if(data && data.length > 0) {
+                    data.forEach(item => {
+                        let st = (item.status || 'pending').toLowerCase();
+                        html += `<div class="card">
+                            <p><b>Task:</b> ${item.task_name} (+${item.reward_amount} MC)</p>
+                            <p><b>Status:</b> <span class="status-badge status-${st}">${st}</span></p>
+                        </div>`;
+                    });
+                } else { html = '<p style="text-align:center; color:var(--text-secondary);">No task submissions found.</p>'; }
+            } else {
+                let { data } = await supabaseClient.from('withdrawals').select('*').eq('telegram_id', telegram_id).order('created_at', { ascending: false });
+                if(data && data.length > 0) {
+                    data.forEach(item => {
+                        let st = (item.status || 'pending').toLowerCase();
+                        html += `<div class="card">
+                            <p><b>Withdrawal (${item.payment_method})</b></p>
+                            <p style="color:var(--accent-color);">${item.amount_mc} MC</p>
+                            <p><b>Status:</b> <span class="status-badge status-${st}">${st}</span></p>
+                        </div>`;
+                    });
+                } else { html = '<p style="text-align:center; color:var(--text-secondary);">No withdrawal logs found.</p>'; }
+            }
+            document.getElementById('historyContent').innerHTML = html;
+        }
+
+        function switchSection(sec, element) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
-            event.target.classList.add('active');
-            document.getElementById('section-' + tab).style.display = 'block';
+            document.getElementById('sec-' + sec).style.display = 'block';
+            element.classList.add('active');
 
-            if(tab === 'withdrawals') loadWithdrawals();
-            if(tab === 'tasks') loadTasks();
-            if(tab === 'users') loadUsers();
+            if(sec === 'history') { loadHistory(); }
+            if(sec === 'home') { initUser(); }
         }
 
-        loadWithdrawals();
+        function switchHistoryTab(tab, element) {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            activeHistoryTab = tab;
+            loadHistory();
+        }
+
+        initUser();
     </script>
 </body>
 </html>
