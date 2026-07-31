@@ -264,11 +264,20 @@
             <div class="header">
                 <h2>Earn Tasks 📋</h2>
             </div>
+            
+            <!-- አዲሱ ታስክ -->
             <div class="card">
                 <h3>Join Telegram Channel</h3>
-                <p>Join our official channel and stay updated to earn +1000 MC.</p>
-                <button class="btn" onclick="completeTask('Join Telegram', 1000, 'https://t.me/Megacoin16')">Start Task (+1000 MC)</button>
+                <p>Join our task channel and stay updated to earn +200 MC.</p>
+                <button class="btn" onclick="completeTask('Join Task Channel', 200, 'https://t.me/megacoin_task')">Start Task (+200 MC)</button>
             </div>
+
+            <div class="card">
+                <h3>Join Telegram Official Channel</h3>
+                <p>Join our official channel and stay updated to earn +1000 MC.</p>
+                <button class="btn" onclick="completeTask('Join Telegram Official', 1000, 'https://t.me/Megacoin16')">Start Task (+1000 MC)</button>
+            </div>
+
             <div class="card">
                 <h3>Watch Promo Video</h3>
                 <p>Engage with our promotional content to earn +500 MC.</p>
@@ -412,7 +421,7 @@
             currentBalance -= amount;
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
 
-            alert('Withdrawal request submitted successfully! Our team will process it shortly.');
+            alert('Withdrawal request submitted successfully! Our team will process it within 24 hours.');
             document.getElementById('pay-amount').value = '';
             document.getElementById('pay-account').value = '';
             fetchUserData();
