@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -265,7 +265,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* Tabs inside History */
         .tab-header {
             display: flex;
             gap: 10px;
@@ -320,12 +319,8 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
-            <div class="card">
-                <h3>Join Telegram Channel</h3>
-                <p>Subscribe to official MegaCoin news feed (+200 MC)</p>
-                <div id="task-action-1">
-                    <button class="btn" onclick="completeInstantTask('Join Telegram Channel', 200, 'https://t.me/+e6aGjzi4MSQwNDlk')">Start Task</button>
-                </div>
+            <div id="tasks-container">
+                <p style="text-align:center; color:var(--text-secondary);">Loading tasks...</p>
             </div>
         </div>
 
@@ -423,51 +418,58 @@
             document.getElementById('user-balance').innerText = currentBalance.toFixed(2) + " MC";
             document.getElementById('wallet-balance').innerText = currentBalance.toFixed(2) + " MC";
 
-            checkTaskStatus();
+            loadTasks();
             fetchHistory();
         }
 
-        async function checkTaskStatus() {
-            let taskName = 'Join Telegram Channel';
-            let { data } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .maybeSingle();
+        async function loadTasks() {
+            let { data: allTasks } = await supabaseClient.from('tasks').select('*');
+            let { data: userSubs } = await supabaseClient.from('task_submissions').select('*').eq('telegram_id', userTelegramId);
 
-            let actionDiv = document.getElementById('task-action-1');
-            if (data && (data.status === 'approved' || data.status === 'pending')) {
-                actionDiv.innerHTML = `<button class="btn" style="background: rgba(16, 185, 129, 0.2); color: var(--success-color); border: 1px solid var(--success-color); cursor: default; box-shadow: none;" disabled>✅ Completed</button>`;
-            }
-        }
-
-        async function completeInstantTask(taskName, reward, link) {
-            let { data: existing } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .maybeSingle();
-
-            if (existing) {
-                alert('You have already completed or submitted this task!');
-                checkTaskStatus();
+            let container = document.getElementById('tasks-container');
+            if (!allTasks || allTasks.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No available tasks right now.</p>';
                 return;
             }
 
-            window.open(link, '_blank');
+            let html = '';
+            allTasks.forEach(task => {
+                let sub = userSubs ? userSubs.find(s => s.task_name === task.task_name) : null;
+                let btnHtml = `<button class="btn" onclick="completeTask('${task.task_name}', ${task.reward}, '${task.link || ''}')">Start Task</button>`;
+
+                if (sub) {
+                    let st = (sub.status || '').toLowerCase();
+                    if (st === 'approved' || st === 'pending') {
+                        btnHtml = `<button class="btn" style="background: rgba(16, 185, 129, 0.2); color: var(--success-color); border: 1px solid var(--success-color); cursor: default; box-shadow: none;" disabled>✅ ${st.toUpperCase()}</button>`;
+                    }
+                }
+
+                html += `
+                    <div class="card">
+                        <h3>${task.task_name}</h3>
+                        <p>Reward: +${task.reward} MC</p>
+                        ${btnHtml}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function completeTask(taskName, reward, link) {
+            if (link && link !== 'undefined' && link !== '') {
+                window.open(link, '_blank');
+            }
 
             let { error: insertError } = await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
                 task_name: taskName, 
                 reward_amount: reward,
                 proof_text: 'Instant Action',
-                status: 'approved'
+                status: 'APPROVED'
             }]);
 
             if (insertError) {
-                alert('Error completing task. Please try again.');
+                alert('Error completing task: ' + insertError.message);
                 return;
             }
 
@@ -475,7 +477,7 @@
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
 
             alert(`Success! +${reward} MC added.`);
-            checkTaskStatus();
+            loadTasks();
             fetchUserData();
         }
 
@@ -489,10 +491,7 @@
             let taskListHTML = '';
             if (tasks && tasks.length > 0) {
                 tasks.forEach(t => {
-                    let statusClass = 'status-pending';
-                    if (t.status === 'approved') statusClass = 'status-approved';
-                    if (t.status === 'rejected') statusClass = 'status-rejected';
-
+                    let st = (t.status || 'pending').toLowerCase();
                     taskListHTML += `
                         <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
                             <div>
@@ -500,7 +499,7 @@
                                 <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">+${t.reward_amount} MC</p>
                             </div>
                             <div>
-                                <span class="status-badge ${statusClass}">${t.status}</span>
+                                <span class="status-badge status-${st}">${st}</span>
                             </div>
                         </div>
                     `;
@@ -519,6 +518,7 @@
             let wdListHTML = '';
             if (withdrawals && withdrawals.length > 0) {
                 withdrawals.forEach(w => {
+                    let st = (w.status || 'pending').toLowerCase();
                     wdListHTML += `
                         <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
                             <div>
@@ -526,7 +526,7 @@
                                 <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
                             </div>
                             <div>
-                                <span class="status-badge status-pending">Pending</span>
+                                <span class="status-badge status-${st}">${st}</span>
                             </div>
                         </div>
                     `;
@@ -559,7 +559,8 @@
                 telegram_id: userTelegramId,
                 amount_mc: amount,
                 payment_method: method,
-                account_detail: account
+                account_detail: account,
+                status: 'PENDING'
             }]);
 
             currentBalance -= amount;
