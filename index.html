@@ -15,6 +15,9 @@
             --text-color: #ffffff;
             --text-secondary: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.08);
+            --success-color: #10b981;
+            --pending-color: #f59e0b;
+            --danger-color: #ef4444;
         }
 
         body {
@@ -23,12 +26,12 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
             min-height: 100vh;
         }
 
         .container {
-            padding: 20px;
+            padding: 16px;
             max-width: 480px;
             margin: auto;
         }
@@ -37,7 +40,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             background: var(--card-bg);
             padding: 12px 16px;
             border-radius: 14px;
@@ -47,10 +50,8 @@
 
         .header h2 {
             margin: 0;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 18px;
+            color: var(--accent-color);
         }
 
         .user-badge {
@@ -67,29 +68,17 @@
             background: var(--card-bg);
             border: 1px solid var(--accent-glow);
             border-radius: 20px;
-            padding: 24px;
+            padding: 22px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
         }
 
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(243, 186, 47, 0.05) 0%, transparent 70%);
-            transform: rotate(30deg);
-            pointer-events: none;
-        }
-
         .balance-card p {
             margin: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -97,67 +86,70 @@
 
         .balance-card h1 {
             color: var(--accent-color);
-            margin: 12px 0 4px 0;
-            font-size: 38px;
+            margin: 8px 0 4px 0;
+            font-size: 34px;
             font-weight: 700;
             text-shadow: 0 2px 10px rgba(243, 186, 47, 0.2);
         }
 
-        .withdraw-info {
+        .conversion-text {
             font-size: 12px;
             color: var(--text-secondary);
-            margin-top: 8px;
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
             border: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
-            transition: transform 0.2s ease;
         }
 
         .card h3 {
             margin-top: 0;
-            margin-bottom: 8px;
-            font-size: 17px;
+            margin-bottom: 6px;
+            font-size: 16px;
             color: #fff;
         }
 
         .card p {
             color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 16px;
+            font-size: 13px;
+            margin-bottom: 12px;
         }
 
         .btn {
             background: linear-gradient(135deg, #f3ba2f 0%, #e0a812 100%);
             color: #111;
             border: none;
-            padding: 14px 20px;
+            padding: 12px 18px;
             border-radius: 12px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.3);
-            transition: opacity 0.2s, transform 0.1s;
+            box-shadow: 0 4px 15px rgba(243, 186, 47, 0.25);
+            transition: transform 0.1s;
         }
 
         .btn:active {
             transform: scale(0.98);
-            opacity: 0.9;
         }
 
-        .btn:disabled {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            cursor: not-allowed;
-            box-shadow: none;
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
         }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--pending-color); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
 
+        /* Navigation Bar */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -166,7 +158,7 @@
             background: rgba(15, 17, 21, 0.95);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 8px 0;
             border-top: 1px solid var(--border-color);
             backdrop-filter: blur(15px);
             z-index: 1000;
@@ -175,18 +167,18 @@
         .nav-item {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
             cursor: pointer;
             background: none;
             border: none;
             flex: 1;
-            padding: 6px 0;
+            padding: 4px 0;
             transition: color 0.2s;
         }
 
         .nav-item span {
-            font-size: 20px;
+            font-size: 18px;
             display: block;
             margin-bottom: 2px;
         }
@@ -212,16 +204,15 @@
 
         input, select {
             width: 100%;
-            padding: 14px;
-            margin: 8px 0 16px 0;
+            padding: 12px;
+            margin: 6px 0 14px 0;
             background: rgba(15, 17, 21, 0.8);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             color: #fff;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         input:focus, select:focus {
@@ -229,18 +220,33 @@
         }
 
         label {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             font-weight: 500;
         }
 
-        .banner-box {
-            background: linear-gradient(135deg, rgba(243, 186, 47, 0.15) 0%, rgba(24, 28, 36, 0.6) 100%);
-            border: 1px dashed var(--accent-color);
-            border-radius: 16px;
-            padding: 20px;
+        /* Tabs inside History */
+        .tab-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
             text-align: center;
-            margin-bottom: 20px;
+        }
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: #111;
+            border-color: var(--accent-color);
         }
     </style>
 </head>
@@ -257,12 +263,18 @@
             <div class="balance-card">
                 <p>Available Balance</p>
                 <h1 id="user-balance">0.00 MC</h1>
-                <div class="withdraw-info">Min Withdraw: 100,000 MC ($10)</div>
+                <div class="conversion-text">Conversion Rate: 100 MC = $1.00 USD</div>
             </div>
 
-            <div class="banner-box">
-                <h3 style="margin: 0 0 8px 0; color: var(--accent-color);">Welcome to MegaCoin!</h3>
-                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">Complete daily tasks and accumulate your coins to withdraw real rewards.</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                <button class="btn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">⚡ Start Earning</button>
+                <button class="btn" style="background: var(--card-bg); color: var(--accent-color); border: 1px solid var(--accent-glow);" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">👛 Withdraw</button>
+            </div>
+
+            <div class="card">
+                <h3>Daily Login Reward</h3>
+                <p>Claim free +10 MegaCoins every 24h</p>
+                <button class="btn" onclick="claimDaily()">Claim 10 MC</button>
             </div>
         </div>
 
@@ -272,56 +284,82 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
-            <!-- ታስክ ቁልፍ (በተሠራ ቁጥር ራሱ ተዘግቶ Completed ይላል) -->
+            <!-- Standard Task (Telegram) -->
             <div class="card">
                 <h3>Join Telegram Channel</h3>
-                <p>Join our task channel and stay updated to earn +200 MC.</p>
-                <button id="task-btn" class="btn" onclick="completeTask('Join Task Channel', 200, 'https://t.me/megacoin_task')">Start Task (+200 MC)</button>
+                <p>Subscribe to official MegaCoin news feed (+15 MC)</p>
+                <div id="task-action-1">
+                    <button class="btn" onclick="completeInstantTask('Join Telegram Channel', 15, 'https://t.me/megacoin_task')">Start Task</button>
+                </div>
+            </div>
+
+            <!-- Proof Task (Watch Video / Promo) -->
+            <div class="card">
+                <h3>Watch Crypto Ad Video</h3>
+                <p>Watch full 30s partner video & submit proof (+25 MC)</p>
+                <div id="task-action-2">
+                    <button class="btn" onclick="openProofModal('Watch Crypto Ad Video', 25, 'https://t.me/megacoin_task')">Submit Proof</button>
+                </div>
             </div>
         </div>
 
         <!-- WALLET PAGE -->
         <div id="wallet" class="page">
             <div class="header">
-                <h2>Wallet & Payout 👛</h2>
+                <h2>Withdrawal Portal 👛</h2>
             </div>
-            <div class="balance-card" style="padding: 16px; margin-bottom: 16px;">
-                <p>Withdrawable Funds</p>
-                <h1 id="wallet-balance" style="font-size: 28px; margin: 6px 0 0 0;">0.00 MC</h1>
+            <div class="balance-card">
+                <p>Withdrawable Balance</p>
+                <h1 id="wallet-balance">0.00 MC</h1>
+                <div class="conversion-text">Min Withdraw: 50 MC</div>
             </div>
             <div class="card">
-                <label>Payment Method</label>
+                <label>Select Payment Method</label>
                 <select id="pay-method">
-                    <option value="USDT_BEP20">USDT (BEP20)</option>
-                    <option value="USDT_TRC20">USDT (TRC20)</option>
+                    <option value="USDT_BEP20">USDT (BEP20 / Binance Smart Chain)</option>
                     <option value="Telebirr">Telebirr</option>
-                    <option value="CBE">CBE (Commercial Bank)</option>
+                    <option value="CBE">CBE (Commercial Bank of Ethiopia)</option>
                 </select>
 
-                <label>Account / Wallet Address</label>
-                <input type="text" id="pay-account" placeholder="Enter account details...">
+                <label>Wallet Address / Account Number</label>
+                <input type="text" id="pay-account" placeholder="0x... or account number">
 
-                <label>Amount (Min 100,000 MC)</label>
-                <input type="number" id="pay-amount" placeholder="e.g. 100000">
+                <label>Withdrawal Amount (Min 50 MC)</label>
+                <input type="number" id="pay-amount" placeholder="e.g. 100">
 
-                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal</button>
+                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
             </div>
         </div>
 
-        <!-- SUPPORT PAGE -->
-        <div id="support" class="page">
+        <!-- HISTORY PAGE -->
+        <div id="history" class="page">
             <div class="header">
-                <h2>Support Center 💬</h2>
+                <h2>Activity History 🕒</h2>
             </div>
-            <div class="card">
-                <h3>Customer Assistance</h3>
-                <p>Having trouble with tasks, balances, or withdrawals? Reach out to our 24/7 support team.</p>
-                <button class="btn" onclick="window.open('https://t.me/megacoin_task', '_blank')">Contact Support</button>
+            
+            <div class="tab-header">
+                <div class="tab-btn active" onclick="switchHistoryTab('tasks')">Task Submissions</div>
+                <div class="tab-btn" onclick="switchHistoryTab('withdrawals')">Withdrawal Logs</div>
             </div>
-            <div class="card">
-                <h3>Partnership & Ads</h3>
-                <p>Interested in promoting your project or advertising with MegaCoin?</p>
-                <button class="btn" onclick="window.open('https://t.me/megacoin_task', '_blank')">Contact Promotion</button>
+
+            <div id="history-tasks-list">
+                <!-- Dynamically loaded task submissions with Pending/Approved/Rejected -->
+            </div>
+            <div id="history-withdrawals-list" style="display: none;">
+                <!-- Dynamically loaded withdrawals -->
+            </div>
+        </div>
+
+        <!-- INVITE PAGE -->
+        <div id="invite" class="page">
+            <div class="header">
+                <h2>Referral Program 👥</h2>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3>Invite Friends & Earn</h3>
+                <p>Get 10% commission from every task completed by your referrals.</p>
+                <input type="text" id="ref-link" readonly style="text-align: center;" value="https://t.me/megacoin_bot?start=ref123">
+                <button class="btn" onclick="copyRefLink()">Copy Referral Link</button>
             </div>
         </div>
     </div>
@@ -337,8 +375,11 @@
         <button class="nav-item" onclick="switchPage('wallet', this)">
             <span>👛</span>Wallet
         </button>
-        <button class="nav-item" onclick="switchPage('support', this)">
-            <span>💬</span>Support
+        <button class="nav-item" onclick="switchPage('history', this)">
+            <span>🕒</span>History
+        </button>
+        <button class="nav-item" onclick="switchPage('invite', this)">
+            <span>👥</span>Invite
         </button>
     </div>
 
@@ -353,12 +394,12 @@
         let userTelegramId = tg.initDataUnsafe?.user?.id || 123456789; 
         let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
         document.getElementById('username').innerText = '@' + userName;
+        document.getElementById('ref-link').value = `https://t.me/megacoin_bot?start=${userTelegramId}`;
 
         let currentBalance = 0;
 
         async function fetchUserData() {
-            // ተጠቃሚውን ከ users ሠንጠረዥ ማምጣት
-            let { data, error } = await supabaseClient
+            let { data } = await supabaseClient
                 .from('users')
                 .select('*')
                 .eq('telegram_id', userTelegramId)
@@ -374,84 +415,137 @@
             } else {
                 currentBalance = data.balance || 0;
             }
-            document.getElementById('user-balance').innerText = currentBalance.toLocaleString() + " MC";
-            document.getElementById('wallet-balance').innerText = currentBalance.toLocaleString() + " MC";
+            document.getElementById('user-balance').innerText = currentBalance.toFixed(2) + " MC";
+            document.getElementById('wallet-balance').innerText = currentBalance.toFixed(2) + " MC";
 
-            // ታስኩ አስቀድሞ መሠራቱን ከ task_submissions ማረጋገጥ
-            let { data: taskData } = await supabaseClient
+            fetchHistory();
+        }
+
+        // Instant Task completion (e.g. Join Channel)
+        async function completeInstantTask(taskName, reward, link) {
+            window.open(link, '_blank');
+            
+            // Check if already submitted
+            let { data: existing } = await supabaseClient
                 .from('task_submissions')
                 .select('*')
                 .eq('telegram_id', userTelegramId)
-                .eq('task_name', 'Join Task Channel')
+                .eq('task_name', taskName)
                 .single();
 
-            if (taskData) {
-                let btn = document.getElementById('task-btn');
-                btn.innerText = 'Completed ✅';
-                btn.disabled = true;
+            if (existing) {
+                alert('You have already submitted this task!');
+                return;
             }
-        }
 
-        async function completeTask(taskName, reward, link) {
-            window.open(link, '_blank');
-            currentBalance += reward;
-            
-            // የተጠቃሚውን ባላንስ ማስተካከል
-            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
-            
-            // ታስኩ መሠራቱን በ task_submissions ሠንጠረዥ መመዝገብ
+            // Insert as Approved instantly or Pending based on choice. Here we set Approved for instant ones.
             await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
                 task_name: taskName, 
-                reward_amount: reward 
+                reward_amount: reward,
+                proof_text: 'Instant Action',
+                status: 'approved'
             }]);
-            
-            alert(`Success! You earned +${reward} MC`);
+
+            currentBalance += reward;
+            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
+
+            alert(`Success! +${reward} MC added.`);
             fetchUserData();
+        }
+
+        // Watch Video / Proof Task (Submits as PENDING)
+        async function openProofModal(taskName, reward, link) {
+            window.open(link, '_blank');
+            let proof = prompt("Enter your Telegram Username or Watch Proof Confirmation code:");
+            if (!proof) return;
+
+            let { data: existing } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', taskName)
+                .single();
+
+            if (existing) {
+                alert('You have already submitted proof for this task!');
+                return;
+            }
+
+            // Insert with 'pending' status so admin can review
+            await supabaseClient.from('task_submissions').insert([{ 
+                telegram_id: userTelegramId, 
+                task_name: taskName, 
+                reward_amount: reward,
+                proof_text: proof,
+                status: 'pending'
+            }]);
+
+            alert('Proof submitted successfully! Status is now PENDING review.');
+            fetchUserData();
+        }
+
+        async function fetchHistory() {
+            // Load Task Submissions History
+            let { data: tasks } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .order('created_at', { ascending: false });
+
+            let taskListHTML = '';
+            if (tasks && tasks.length > 0) {
+                tasks.forEach(t => {
+                    let statusClass = 'status-pending';
+                    if (t.status === 'approved') statusClass = 'status-approved';
+                    if (t.status === 'rejected') statusClass = 'status-rejected';
+
+                    taskListHTML += `
+                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                            <div>
+                                <h3 style="margin:0; font-size:14px;">${t.task_name}</h3>
+                                <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">+${t.reward_amount} MC</p>
+                            </div>
+                            <div>
+                                <span class="status-badge ${statusClass}">${t.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                taskListHTML = '<p style="text-align:center; color:var(--text-secondary);">No task history found.</p>';
+            }
+            document.getElementById('history-tasks-list').innerHTML = taskListHTML;
+
+            // Load Withdrawals History
+            let { data: withdrawals } = await supabaseClient
+                .from('withdrawals')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .order('created_at', { ascending: false });
+
+            let wdListHTML = '';
+            if (withdrawals && withdrawals.length > 0) {
+                withdrawals.forEach(w => {
+                    wdListHTML += `
+                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                            <div>
+                                <h3 style="margin:0; font-size:14px;">Withdrawal (${w.payment_method})</h3>
+                                <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
+                            </div>
+                            <div>
+                                <span class="status-badge status-pending">Pending</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                wdListHTML = '<p style="text-align:center; color:var(--text-secondary);">No withdrawal history found.</p>';
+            }
+            document.getElementById('history-withdrawals-list').innerHTML = wdListHTML;
         }
 
         async function requestWithdrawal() {
             let amount = parseFloat(document.getElementById('pay-amount').value);
             let method = document.getElementById('pay-method').value;
-            let account = document.getElementById('pay-account').value;
-
-            if (!amount || amount < 100000) {
-                alert('Minimum withdrawal requirement is 100,000 MC ($10)!');
-                return;
-            }
-            if (amount > currentBalance) {
-                alert('Insufficient balance in your account!');
-                return;
-            }
-            if (!account) {
-                alert('Please enter your valid account or wallet details!');
-                return;
-            }
-
-            await supabaseClient.from('withdrawals').insert([{
-                telegram_id: userTelegramId,
-                amount_mc: amount,
-                payment_method: method,
-                account_detail: account
-            }]);
-
-            currentBalance -= amount;
-            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
-
-            alert('Withdrawal request submitted successfully! Our team will process it within 24 hours.');
-            document.getElementById('pay-amount').value = '';
-            document.getElementById('pay-account').value = '';
-            fetchUserData();
-        }
-
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        fetchUserData();
-    </script>
-</body>
-</html>
+            let a
