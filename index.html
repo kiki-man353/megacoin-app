@@ -475,10 +475,13 @@
                     }
                 }
 
+                let descHtml = task.description ? `<p style="color: var(--text-secondary); font-size: 13px; margin: 6px 0 12px 0;">${task.description}</p>` : '';
+
                 html += `
                     <div class="card">
                         <h3>${task.task_name}</h3>
-                        <p>Reward: +${task.reward} MC</p>
+                        ${descHtml}
+                        <p style="margin-bottom: 12px;"><b>Reward:</b> +${task.reward} MC</p>
                         ${btnHtml}
                     </div>
                 `;
