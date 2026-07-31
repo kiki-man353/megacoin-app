@@ -284,7 +284,6 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
-            <!-- Standard Task (Telegram) -->
             <div class="card">
                 <h3>Join Telegram Channel</h3>
                 <p>Subscribe to official MegaCoin news feed (+15 MC)</p>
@@ -293,7 +292,6 @@
                 </div>
             </div>
 
-            <!-- Proof Task (Watch Video / Promo) -->
             <div class="card">
                 <h3>Watch Crypto Ad Video</h3>
                 <p>Watch full 30s partner video & submit proof (+25 MC)</p>
@@ -342,12 +340,8 @@
                 <div class="tab-btn" onclick="switchHistoryTab('withdrawals')">Withdrawal Logs</div>
             </div>
 
-            <div id="history-tasks-list">
-                <!-- Dynamically loaded task submissions with Pending/Approved/Rejected -->
-            </div>
-            <div id="history-withdrawals-list" style="display: none;">
-                <!-- Dynamically loaded withdrawals -->
-            </div>
+            <div id="history-tasks-list"></div>
+            <div id="history-withdrawals-list" style="display: none;"></div>
         </div>
 
         <!-- INVITE PAGE -->
@@ -358,7 +352,7 @@
             <div class="card" style="text-align: center;">
                 <h3>Invite Friends & Earn</h3>
                 <p>Get 10% commission from every task completed by your referrals.</p>
-                <input type="text" id="ref-link" readonly style="text-align: center;" value="https://t.me/megacoin_bot?start=ref123">
+                <input type="text" id="ref-link" readonly style="text-align: center;" value="">
                 <button class="btn" onclick="copyRefLink()">Copy Referral Link</button>
             </div>
         </div>
@@ -421,11 +415,9 @@
             fetchHistory();
         }
 
-        // Instant Task completion (e.g. Join Channel)
         async function completeInstantTask(taskName, reward, link) {
             window.open(link, '_blank');
             
-            // Check if already submitted
             let { data: existing } = await supabaseClient
                 .from('task_submissions')
                 .select('*')
@@ -438,7 +430,6 @@
                 return;
             }
 
-            // Insert as Approved instantly or Pending based on choice. Here we set Approved for instant ones.
             await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
                 task_name: taskName, 
@@ -454,7 +445,6 @@
             fetchUserData();
         }
 
-        // Watch Video / Proof Task (Submits as PENDING)
         async function openProofModal(taskName, reward, link) {
             window.open(link, '_blank');
             let proof = prompt("Enter your Telegram Username or Watch Proof Confirmation code:");
@@ -472,7 +462,6 @@
                 return;
             }
 
-            // Insert with 'pending' status so admin can review
             await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
                 task_name: taskName, 
@@ -486,7 +475,6 @@
         }
 
         async function fetchHistory() {
-            // Load Task Submissions History
             let { data: tasks } = await supabaseClient
                 .from('task_submissions')
                 .select('*')
@@ -517,7 +505,6 @@
             }
             document.getElementById('history-tasks-list').innerHTML = taskListHTML;
 
-            // Load Withdrawals History
             let { data: withdrawals } = await supabaseClient
                 .from('withdrawals')
                 .select('*')
@@ -548,4 +535,98 @@
         async function requestWithdrawal() {
             let amount = parseFloat(document.getElementById('pay-amount').value);
             let method = document.getElementById('pay-method').value;
-            let a
+            let account = document.getElementById('pay-account').value;
+
+            if (!amount || amount < 50) {
+                alert('Minimum withdrawal requirement is 50 MC!');
+                return;
+            }
+            if (amount > currentBalance) {
+                alert('Insufficient balance!');
+                return;
+            }
+            if (!account) {
+                alert('Please enter your account details!');
+                return;
+            }
+
+            await supabaseClient.from('withdrawals').insert([{
+                telegram_id: userTelegramId,
+                amount_mc: amount,
+                payment_method: method,
+                account_detail: account
+            }]);
+
+            currentBalance -= amount;
+            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
+
+            alert('Withdrawal request submitted successfully!');
+            document.getElementById('pay-amount').value = '';
+            document.getElementById('pay-account').value = '';
+            fetchUserData();
+        }
+
+        async function claimDaily() {
+            let today = new Date().toISOString().split('T')[0];
+            let taskName = `Daily Check-in (${today})`;
+
+            let { data: existing } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', taskName)
+                .single();
+
+            if (existing) {
+                alert('You have already claimed your daily reward today!');
+                return;
+            }
+
+            await supabaseClient.from('task_submissions').insert([{ 
+                telegram_id: userTelegramId, 
+                task_name: taskName, 
+                reward_amount: 10,
+                proof_text: 'Daily Claim',
+                status: 'approved'
+            }]);
+
+            currentBalance += 10;
+            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
+
+            alert('Daily bonus claimed (+10 MC)!');
+            fetchUserData();
+        }
+
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function switchHistoryTab(tab) {
+            let btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            
+            if (tab === 'tasks') {
+                btns[0].classList.add('active');
+                document.getElementById('history-tasks-list').style.display = 'block';
+                document.getElementById('history-withdrawals-list').style.display = 'none';
+            } else {
+                btns[1].classList.add('active');
+                document.getElementById('history-tasks-list').style.display = 'none';
+                document.getElementById('history-withdrawals-list').style.display = 'block';
+            }
+        }
+
+        function copyRefLink() {
+            let copyText = document.getElementById("ref-link");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Referral link copied to clipboard!");
+        }
+
+        fetchUserData();
+    </script>
+</body>
+</html>
