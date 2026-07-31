@@ -183,7 +183,7 @@
             if (data && data.length > 0) {
                 for (let w of data) {
                     let currentStatus = (w.status || 'pending').toLowerCase();
-                    let recordId = w.id; // Using exact primary key id
+                    let recordId = w.id;
                     
                     let userUname = 'N/A';
                     let { data: uData } = await supabaseClient.from('users').select('username').eq('telegram_id', w.telegram_id).single();
@@ -213,7 +213,7 @@
             if (data && data.length > 0) {
                 for (let t of data) {
                     let currentStatus = (t.status || 'pending').toLowerCase();
-                    let recordId = t.id; // Using exact primary key id
+                    let recordId = t.id;
                     
                     let userUname = 'N/A';
                     let { data: uData } = await supabaseClient.from('users').select('username').eq('telegram_id', t.telegram_id).single();
@@ -275,9 +275,21 @@
             let link = document.getElementById('newTaskLink').value;
             if(!name || !reward) return alert('Fill required fields');
             
-            let { error } = await supabaseClient.from('tasks').insert([{ task_name: name, reward: parseFloat(reward), link: link, status: 'active' }]);
-            if(error) alert('Error creating task');
-            else { alert('Task published successfully!'); document.getElementById('newTaskName').value = ''; document.getElementById('newTaskReward').value = ''; }
+            let { error } = await supabaseClient.from('tasks').insert([{ 
+                task_name: name, 
+                reward: parseFloat(reward), 
+                link: link, 
+                status: 'active' 
+            }]);
+            
+            if(error) {
+                alert('Error creating task: ' + error.message);
+            } else { 
+                alert('Task published successfully!'); 
+                document.getElementById('newTaskName').value = ''; 
+                document.getElementById('newTaskReward').value = ''; 
+                document.getElementById('newTaskLink').value = '';
+            }
         }
 
         async function updateStatus(table, recordId, status) {
