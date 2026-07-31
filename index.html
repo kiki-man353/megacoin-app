@@ -312,12 +312,6 @@
                 <button class="btn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">⚡ Start Earning</button>
                 <button class="btn" style="background: var(--card-bg); color: var(--accent-color); border: 1px solid var(--accent-glow);" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">👛 Withdraw</button>
             </div>
-
-            <div class="card">
-                <h3>Daily Login Reward</h3>
-                <p>Claim free +100 MegaCoins every day</p>
-                <button class="btn" id="daily-btn" onclick="claimDaily()">Claim 10 MC</button>
-            </div>
         </div>
 
         <!-- TASKS PAGE -->
@@ -429,7 +423,6 @@
             document.getElementById('user-balance').innerText = currentBalance.toFixed(2) + " MC";
             document.getElementById('wallet-balance').innerText = currentBalance.toFixed(2) + " MC";
 
-            checkDailyStatus();
             checkTaskStatus();
             fetchHistory();
         }
@@ -575,69 +568,6 @@
             alert('Withdrawal request submitted successfully!');
             document.getElementById('pay-amount').value = '';
             document.getElementById('pay-account').value = '';
-            fetchUserData();
-        }
-
-        async function checkDailyStatus() {
-            let today = new Date().toISOString().split('T')[0];
-            let taskName = `Daily Check-in (${today})`;
-
-            let { data } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .maybeSingle();
-
-            let btn = document.getElementById('daily-btn');
-            if (data) {
-                btn.innerText = '✅ Already Claimed Today';
-                btn.style.opacity = '0.6';
-                btn.style.background = 'rgba(16, 185, 129, 0.2)';
-                btn.style.color = 'var(--success-color)';
-                btn.style.boxShadow = 'none';
-                btn.disabled = true;
-            } else {
-                btn.innerText = 'Claim 10 MC';
-                btn.style.opacity = '1';
-                btn.style.background = 'var(--accent-gradient)';
-                btn.style.color = '#0b0d12';
-                btn.style.boxShadow = '0 6px 20px rgba(243, 186, 47, 0.3)';
-                btn.disabled = false;
-            }
-        }
-
-        async function claimDaily() {
-            let today = new Date().toISOString().split('T')[0];
-            let taskName = `Daily Check-in (${today})`;
-            let btn = document.getElementById('daily-btn');
-            if(btn.disabled) return;
-
-            let { data: existing } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .maybeSingle();
-
-            if (existing) {
-                alert('You have already claimed today!');
-                checkDailyStatus();
-                return;
-            }
-
-            await supabaseClient.from('task_submissions').insert([{ 
-                telegram_id: userTelegramId, 
-                task_name: taskName, 
-                reward_amount: 10,
-                proof_text: 'Daily Claim',
-                status: 'approved'
-            }]);
-
-            currentBalance += 10;
-            await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
-
-            alert('Daily bonus claimed (+10 MC)!');
             fetchUserData();
         }
 
