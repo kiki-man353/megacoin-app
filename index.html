@@ -149,7 +149,7 @@
         .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
         .status-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        /* Navigation Bar */
+        /* Navigation Bar (4 items now) */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -274,11 +274,11 @@
             <div class="card">
                 <h3>Daily Login Reward</h3>
                 <p>Claim free +10 MegaCoins every 24h</p>
-                <button class="btn" onclick="claimDaily()">Claim 10 MC</button>
+                <button class="btn" id="daily-btn" onclick="claimDaily()">Claim 10 MC</button>
             </div>
         </div>
 
-        <!-- TASKS PAGE -->
+        <!-- TASKS PAGE (Only 1 Task left) -->
         <div id="tasks" class="page">
             <div class="header">
                 <h2>Earn Tasks 📋</h2>
@@ -289,14 +289,6 @@
                 <p>Subscribe to official MegaCoin news feed (+15 MC)</p>
                 <div id="task-action-1">
                     <button class="btn" onclick="completeInstantTask('Join Telegram Channel', 15, 'https://t.me/megacoin_task')">Start Task</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Watch Crypto Ad Video</h3>
-                <p>Watch full 30s partner video & submit proof (+25 MC)</p>
-                <div id="task-action-2">
-                    <button class="btn" onclick="openProofModal('Watch Crypto Ad Video', 25, 'https://t.me/megacoin_task')">Submit Proof</button>
                 </div>
             </div>
         </div>
@@ -343,22 +335,9 @@
             <div id="history-tasks-list"></div>
             <div id="history-withdrawals-list" style="display: none;"></div>
         </div>
-
-        <!-- INVITE PAGE -->
-        <div id="invite" class="page">
-            <div class="header">
-                <h2>Referral Program 👥</h2>
-            </div>
-            <div class="card" style="text-align: center;">
-                <h3>Invite Friends & Earn</h3>
-                <p>Get 10% commission from every task completed by your referrals.</p>
-                <input type="text" id="ref-link" readonly style="text-align: center;" value="">
-                <button class="btn" onclick="copyRefLink()">Copy Referral Link</button>
-            </div>
-        </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- NAVIGATION BAR (Without Invite) -->
     <div class="nav-bar">
         <button class="nav-item active" onclick="switchPage('home', this)">
             <span>🏠</span>Home
@@ -371,9 +350,6 @@
         </button>
         <button class="nav-item" onclick="switchPage('history', this)">
             <span>🕒</span>History
-        </button>
-        <button class="nav-item" onclick="switchPage('invite', this)">
-            <span>👥</span>Invite
         </button>
     </div>
 
@@ -388,7 +364,6 @@
         let userTelegramId = tg.initDataUnsafe?.user?.id || 123456789; 
         let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
         document.getElementById('username').innerText = '@' + userName;
-        document.getElementById('ref-link').value = `https://t.me/megacoin_bot?start=${userTelegramId}`;
 
         let currentBalance = 0;
 
@@ -412,6 +387,7 @@
             document.getElementById('user-balance').innerText = currentBalance.toFixed(2) + " MC";
             document.getElementById('wallet-balance').innerText = currentBalance.toFixed(2) + " MC";
 
+            checkDailyStatus();
             fetchHistory();
         }
 
@@ -445,35 +421,6 @@
             fetchUserData();
         }
 
-        async function openProofModal(taskName, reward, link) {
-            window.open(link, '_blank');
-            let proof = prompt("Enter your Telegram Username or Watch Proof Confirmation code:");
-            if (!proof) return;
-
-            let { data: existing } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .single();
-
-            if (existing) {
-                alert('You have already submitted proof for this task!');
-                return;
-            }
-
-            await supabaseClient.from('task_submissions').insert([{ 
-                telegram_id: userTelegramId, 
-                task_name: taskName, 
-                reward_amount: reward,
-                proof_text: proof,
-                status: 'pending'
-            }]);
-
-            alert('Proof submitted successfully! Status is now PENDING review.');
-            fetchUserData();
-        }
-
         async function fetchHistory() {
             let { data: tasks } = await supabaseClient
                 .from('task_submissions')
@@ -484,6 +431,7 @@
             let taskListHTML = '';
             if (tasks && tasks.length > 0) {
                 tasks.forEach(t => {
+                    // Daily claimዎችን ከ task ዝርዝር ለየት ባለ መልኩ ማሳየት ወይም ማለፍ ይቻላል፣ እዚህ ግን በታሪክ ውስጥ ይታያሉ
                     let statusClass = 'status-pending';
                     if (t.status === 'approved') statusClass = 'status-approved';
                     if (t.status === 'rejected') statusClass = 'status-rejected';
@@ -566,25 +514,42 @@
             fetchUserData();
         }
 
-        async function claimDaily() {
-            let today = new Date().toISOString().split('T')[0];
-            let taskName = `Daily Check-in (${today})`;
-
-            let { data: existing } = await supabaseClient
+        // 24 Hours Daily Check-in Logic
+        async function checkDailyStatus() {
+            let { data } = await supabaseClient
                 .from('task_submissions')
-                .select('*')
+                .select('created_at')
                 .eq('telegram_id', userTelegramId)
-                .eq('task_name', taskName)
-                .single();
+                .eq('task_name', 'Daily Check-in')
+                .order('created_at', { ascending: false })
+                .limit(1);
 
-            if (existing) {
-                alert('You have already claimed your daily reward today!');
-                return;
+            let btn = document.getElementById('daily-btn');
+            if (data && data.length > 0) {
+                let lastClaimTime = new Date(data[0].created_at).getTime();
+                let now = new Date().getTime();
+                let diffHours = (now - lastClaimTime) / (1000 * 60 * 60);
+
+                if (diffHours < 24) {
+                    let hoursLeft = Math.ceil(24 - diffHours);
+                    btn.innerText = `Already Claimed (Next in ${hoursLeft}h)`;
+                    btn.style.opacity = '0.6';
+                    btn.disabled = true;
+                    return;
+                }
             }
+            btn.innerText = 'Claim 10 MC';
+            btn.style.opacity = '1';
+            btn.disabled = false;
+        }
+
+        async function claimDaily() {
+            let btn = document.getElementById('daily-btn');
+            if(btn.disabled) return;
 
             await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId, 
-                task_name: taskName, 
+                task_name: 'Daily Check-in', 
                 reward_amount: 10,
                 proof_text: 'Daily Claim',
                 status: 'approved'
@@ -617,13 +582,6 @@
                 document.getElementById('history-tasks-list').style.display = 'none';
                 document.getElementById('history-withdrawals-list').style.display = 'block';
             }
-        }
-
-        function copyRefLink() {
-            let copyText = document.getElementById("ref-link");
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            alert("Referral link copied to clipboard!");
         }
 
         fetchUserData();
