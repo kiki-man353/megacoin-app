@@ -151,6 +151,13 @@
             opacity: 0.9;
         }
 
+        .btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -265,11 +272,11 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
-            <!-- የተረፈው ብቸኛ ታስክ -->
+            <!-- ታስክ ቁልፍ (በተሠራ ቁጥር ራሱ ተዘግቶ Completed ይላል) -->
             <div class="card">
                 <h3>Join Telegram Channel</h3>
                 <p>Join our task channel and stay updated to earn +200 MC.</p>
-                <button class="btn" onclick="completeTask('Join Task Channel', 200, 'https://t.me/megacoin_task')">Start Task (+200 MC)</button>
+                <button id="task-btn" class="btn" onclick="completeTask('Join Task Channel', 200, 'https://t.me/megacoin_task')">Start Task (+200 MC)</button>
             </div>
         </div>
 
@@ -309,7 +316,7 @@
             <div class="card">
                 <h3>Customer Assistance</h3>
                 <p>Having trouble with tasks, balances, or withdrawals? Reach out to our 24/7 support team.</p>
-                <button class="btn" onclick="window.open('https://t.me/Megacoin_task', '_blank')">Contact Support</button>
+                <button class="btn" onclick="window.open('https://t.me/megacoin_task', '_blank')">Contact Support</button>
             </div>
             <div class="card">
                 <h3>Partnership & Ads</h3>
@@ -350,6 +357,7 @@
         let currentBalance = 0;
 
         async function fetchUserData() {
+            // ተጠቃሚውን ከ users ሠንጠረዥ ማምጣት
             let { data, error } = await supabaseClient
                 .from('users')
                 .select('*')
@@ -368,14 +376,35 @@
             }
             document.getElementById('user-balance').innerText = currentBalance.toLocaleString() + " MC";
             document.getElementById('wallet-balance').innerText = currentBalance.toLocaleString() + " MC";
+
+            // ታስኩ አስቀድሞ መሠራቱን ከ task_submissions ማረጋገጥ
+            let { data: taskData } = await supabaseClient
+                .from('task_submissions')
+                .select('*')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', 'Join Task Channel')
+                .single();
+
+            if (taskData) {
+                let btn = document.getElementById('task-btn');
+                btn.innerText = 'Completed ✅';
+                btn.disabled = true;
+            }
         }
 
         async function completeTask(taskName, reward, link) {
             window.open(link, '_blank');
             currentBalance += reward;
             
+            // የተጠቃሚውን ባላንስ ማስተካከል
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
-            await supabaseClient.from('task_submissions').insert([{ telegram_id: userTelegramId, task_name: taskName, reward_amount: reward }]);
+            
+            // ታስኩ መሠራቱን በ task_submissions ሠንጠረዥ መመዝገብ
+            await supabaseClient.from('task_submissions').insert([{ 
+                telegram_id: userTelegramId, 
+                task_name: taskName, 
+                reward_amount: reward 
+            }]);
             
             alert(`Success! You earned +${reward} MC`);
             fetchUserData();
