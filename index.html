@@ -268,6 +268,13 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
+            <!-- Tasks Category Tabs (Daily, Email, YouTube) -->
+            <div class="tab-header">
+                <div class="tab-btn active" onclick="switchTaskCategory('Daily Task', this)">Daily Tasks</div>
+                <div class="tab-btn" onclick="switchTaskCategory('Email Create Task', this)">Email Tasks</div>
+                <div class="tab-btn" onclick="switchTaskCategory('YouTube Watch', this)">YouTube Watch</div>
+            </div>
+
             <!-- Tasks List View -->
             <div id="tasks-list-view">
                 <div id="tasks-container">
@@ -365,6 +372,7 @@
 
         let currentBalance = 0;
         let activeSelectedTask = null;
+        let currentTaskCategory = 'Daily Task'; // Default active category
 
         async function fetchUserData() {
             let { data } = await supabaseClient
@@ -398,13 +406,21 @@
             fetchHistory();
         }
 
+        function switchTaskCategory(category, element) {
+            currentTaskCategory = category;
+            let parentContainer = element.parentElement;
+            parentContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            loadTasks();
+        }
+
         async function loadTasks() {
-            let { data: allTasks } = await supabaseClient.from('tasks').select('*');
+            let { data: allTasks } = await supabaseClient.from('tasks').select('*').eq('category', currentTaskCategory);
             let { data: userSubs } = await supabaseClient.from('task_submissions').select('*').eq('telegram_id', userTelegramId);
 
             let container = document.getElementById('tasks-container');
             if (!allTasks || allTasks.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No available tasks right now.</p>';
+                container.innerHTML = `<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No available tasks in ${currentTaskCategory}.</p>`;
                 return;
             }
 
