@@ -282,7 +282,7 @@
                     <h3 id="detail-task-title" style="color: var(--accent-color);">Job Description</h3>
                     <p style="margin-bottom: 10px;"><b>Reward:</b> <span id="detail-task-reward">0</span> MC</p>
                     
-                    <!-- Dedicated Task Link Button Container -->
+                    <!-- Dedicated Task Link Buttons Container (Multiple Links Support) -->
                     <div id="detail-link-container" style="margin-bottom: 15px;"></div>
 
                     <div class="job-instruction-box" id="detail-task-instructions">
@@ -432,10 +432,22 @@
             document.getElementById('submission-comment').value = '';
 
             let linkContainer = document.getElementById('detail-link-container');
+            linkContainer.innerHTML = '';
+
             if (task.link && task.link.trim() !== '') {
-                linkContainer.innerHTML = `<a href="${task.link}" target="_blank" class="btn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; margin-top: 0; text-decoration: none; display: block;">🔗 Open Task Link / Download</a>`;
-            } else {
-                linkContainer.innerHTML = '';
+                // Split multiple links separated by ' | '
+                let linksArray = task.link.split(' | ');
+                linksArray.forEach((linkUrl, index) => {
+                    if (linkUrl.trim() !== '') {
+                        let a = document.createElement('a');
+                        a.href = linkUrl.trim();
+                        a.target = '_blank';
+                        a.className = 'btn';
+                        a.style.cssText = 'background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; margin-top: 5px; text-decoration: none; display: block;';
+                        a.innerText = `🔗 Open Task Link ${index + 1} / Download`;
+                        linkContainer.appendChild(a);
+                    }
+                });
             }
 
             document.getElementById('tasks-list-view').style.display = 'none';
