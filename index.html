@@ -316,7 +316,7 @@
                 <p>Withdrawable Balance</p>
                 <h1 id="wallet-balance">0.00 MC</h1>
                 <div id="wallet-balance-usd" class="conversion-text" style="font-weight: 700; margin-top: 4px; color: var(--accent-color);">$0.00 USD</div>
-                <div class="conversion-text" style="margin-top: 6px;">Min Withdraw: 100,000 MC ($10)</div>
+                <div class="conversion-text" style="margin-top: 6px;">Min Withdraw: 30,000 MC ($3)</div>
             </div>
             <div class="card">
                 <label>Select Payment Method</label>
@@ -330,7 +330,7 @@
                 <input type="text" id="pay-account" placeholder="Account number">
 
                 <label>Withdrawal Amount</label>
-                <input type="number" id="pay-amount" placeholder="e.g. 100000">
+                <input type="number" id="pay-amount" placeholder="e.g. 30000">
 
                 <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
             </div>
@@ -574,8 +574,8 @@
             let method = document.getElementById('pay-method').value;
             let account = document.getElementById('pay-account').value;
 
-            if (!amount || amount < 100000) {
-                alert('Minimum withdrawal requirement is 100,000 MC!');
+            if (!amount || amount < 30000) {
+                alert('Minimum withdrawal requirement is 30,000 MC ($3)!');
                 return;
             }
             if (amount > currentBalance) {
