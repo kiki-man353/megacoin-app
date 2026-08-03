@@ -8,31 +8,37 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #07090e 0%, #121824 50%, #1a1f2c 100%);
-            --card-bg: rgba(22, 27, 34, 0.75);
+            --bg-color: #0b0d12;
+            --card-bg: #161b22;
+            --card-gradient: linear-gradient(145deg, #161b22 0%, #1f242d 100%);
+            --accent-orange: #ff5500;
+            --accent-orange-gradient: linear-gradient(135deg, #ff7a00 0%, #ff3b00 100%);
+            --accent-green: #00d26a;
+            --accent-green-gradient: linear-gradient(135deg, #00e676 0%, #00b050 100%);
             --accent-color: #f3ba2f;
-            --accent-gradient: linear-gradient(135deg, #f3ba2f 0%, #ffdf7e 50%, #d49e1e 100%);
-            --accent-glow: rgba(243, 186, 47, 0.35);
             --text-color: #ffffff;
             --text-secondary: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --success-color: #10b981;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --success-color: #00d26a;
             --pending-color: #f59e0b;
             --danger-color: #ef4444;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-gradient);
+            background: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 0;
             padding-bottom: 95px;
             min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 85, 0, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(243, 186, 47, 0.05) 0%, transparent 40%);
         }
 
         .container {
-            padding: 18px;
+            padding: 16px;
             max-width: 480px;
             margin: auto;
         }
@@ -42,156 +48,237 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            background: var(--card-bg);
-            padding: 14px 18px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            padding: 4px 0;
         }
 
         .header h2 {
             margin: 0;
-            font-size: 20px;
-            color: var(--accent-color);
-            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .user-badge {
-            background: rgba(243, 186, 47, 0.12);
-            color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
             padding: 6px 14px;
-            border-radius: 25px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 10px 0;
+        }
+
+        .hero-logo {
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, #ff5500, #ffbb00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+            font-size: 36px;
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.35);
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(255, 85, 0, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(255, 85, 0, 0.6); }
+        }
+
+        .coin-name {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .usd-pill {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 210, 106, 0.1);
+            border: 1px solid rgba(0, 210, 106, 0.25);
+            color: var(--accent-green);
+            padding: 5px 14px;
+            border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
-            border: 1px solid var(--accent-glow);
+            margin-top: 8px;
         }
 
-        .balance-card {
-            background: var(--card-bg);
-            border: 1px solid var(--accent-glow);
-            border-radius: 22px;
-            padding: 26px 20px;
-            text-align: center;
-            margin-bottom: 18px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .balance-card p {
-            margin: 0;
-            font-size: 11px;
-            color: var(--text-secondary);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .balance-card h1 {
-            color: var(--accent-color);
-            margin: 10px 0 6px 0;
-            font-size: 38px;
+        .btn-action {
+            border: none;
+            padding: 15px;
+            border-radius: 16px;
             font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            transition: transform 0.1s ease;
         }
 
-        .conversion-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-            opacity: 0.8;
+        .btn-action:active { transform: scale(0.97); }
+
+        .btn-earn {
+            background: var(--accent-orange-gradient);
+            box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
+        }
+
+        .btn-withdraw-action {
+            background: var(--accent-green-gradient);
+            box-shadow: 0 8px 20px rgba(0, 210, 106, 0.3);
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 16px;
+            background: var(--card-gradient);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
         }
 
         .card h3 {
             margin-top: 0;
             margin-bottom: 6px;
-            font-size: 16px;
+            font-size: 15px;
             color: #fff;
             font-weight: 700;
         }
 
         .card p {
             color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .support-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .support-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .support-item:first-child {
+            padding-top: 0;
+        }
+
+        .support-link {
+            color: var(--accent-orange);
+            font-weight: 700;
             font-size: 13px;
-            line-height: 1.5;
+            background: rgba(255, 85, 0, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
         }
 
         .btn {
-            background: var(--accent-gradient);
-            color: #0b0d12;
+            background: var(--accent-orange-gradient);
+            color: #fff;
             border: none;
-            padding: 13px 20px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 14px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 6px 20px rgba(243, 186, 47, 0.3);
             text-align: center;
             box-sizing: border-box;
             margin-top: 10px;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 85, 0, 0.25);
         }
 
         .btn-secondary {
-            background: var(--card-bg);
-            color: var(--accent-color);
-            border: 1px solid var(--accent-glow);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
         }
 
         .status-badge {
-            padding: 5px 12px;
-            border-radius: 10px;
-            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
             display: inline-block;
         }
         .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--pending-color); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-approved { background: rgba(0, 210, 106, 0.15); color: var(--success-color); border: 1px solid rgba(0, 210, 106, 0.3); }
         .status-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        #job-detail-view {
-            display: none;
-        }
+        #job-detail-view { display: none; }
 
         .job-instruction-box {
-            background: rgba(11, 13, 18, 0.6);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 16px;
+            padding: 12px;
+            margin-bottom: 14px;
             white-space: pre-line;
             font-size: 12px;
             color: #d1d5db;
-            max-height: 250px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
         input, textarea, select {
             width: 100%;
-            padding: 13px 15px;
-            margin: 8px 0 16px 0;
-            background: rgba(11, 13, 18, 0.85);
+            padding: 12px 14px;
+            margin: 6px 0 14px 0;
+            background: #0f131a;
             border: 1px solid var(--border-color);
             border-radius: 12px;
             color: #fff;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
         }
 
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent-orange);
+        }
+
         label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .nav-bar {
@@ -199,10 +286,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(11, 13, 18, 0.92);
+            background: rgba(15, 19, 26, 0.95);
+            backdrop-filter: blur(15px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 8px 0;
             border-top: 1px solid var(--border-color);
             z-index: 1000;
         }
@@ -210,33 +298,33 @@
         .nav-item {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 10px;
             text-align: center;
             cursor: pointer;
             background: none;
             border: none;
             flex: 1;
             padding: 4px 0;
-            font-weight: 500;
+            font-weight: 600;
+            transition: color 0.2s;
         }
 
         .nav-item span {
             font-size: 20px;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .nav-item.active {
-            color: var(--accent-color);
-            font-weight: 700;
+            color: var(--accent-orange);
         }
 
         .page { display: none; }
         .page.active { display: block; }
 
-        .tab-header { display: flex; gap: 10px; margin-bottom: 18px; }
-        .tab-btn { flex: 1; padding: 12px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
-        .tab-btn.active { background: var(--accent-gradient); color: #0b0d12; border-color: transparent; }
+        .tab-header { display: flex; gap: 8px; margin-bottom: 16px; }
+        .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: var(--accent-orange-gradient); color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(255, 85, 0, 0.3); }
     </style>
 </head>
 <body>
@@ -245,20 +333,55 @@
         <!-- HOME PAGE -->
         <div id="home" class="page active">
             <div class="header">
-                <h2>MegaCoin 🪙</h2>
+                <h2>Gasnaw™ 🔥</h2>
                 <span id="username" class="user-badge">@User</span>
             </div>
 
-            <div class="balance-card">
-                <p>Available Balance</p>
-                <h1 id="user-balance">0.00 MC</h1>
-                <div id="user-balance-usd" class="conversion-text" style="font-weight: 700; margin-top: 4px; color: var(--accent-color);">$0.00 USD</div>
-                <div class="conversion-text" style="margin-top: 6px;">Conversion Rate: 10,000 MC = $1.00 USD</div>
+            <div class="hero-section">
+                <div class="hero-logo">🪙</div>
+                <div class="coin-name">MEGACOIN</div>
+                <h1 id="user-balance" style="margin: 4px 0; font-size: 34px; font-weight: 800; color: #fff;">0.00 MC</h1>
+                <div>
+                    <span id="user-balance-usd" class="usd-pill">🟢 ≈ $0.0000 USDT</span>
+                </div>
             </div>
 
-            <div style="display: flex; gap: 12px; margin-bottom: 18px;">
-                <button class="btn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">⚡ Start Earning</button>
-                <button class="btn btn-secondary" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">👛 Withdraw</button>
+            <div class="action-grid">
+                <button class="btn-action btn-earn" onclick="switchPage('tasks', document.querySelectorAll('.nav-item')[1])">
+                    ⚡ EARN
+                </button>
+                <button class="btn-action btn-withdraw-action" onclick="switchPage('wallet', document.querySelectorAll('.nav-item')[2])">
+                    🤑 WITHDRAW
+                </button>
+            </div>
+
+            <!-- Customer Support Card -->
+            <div class="card">
+                <h3 style="margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">🎧 Customer Support</h3>
+                
+                <a href="https://t.me/Megacoin16" target="_blank" class="support-item">
+                    <div>
+                        <p style="color: #fff; font-weight: 600;">Task Problem</p>
+                        <p style="font-size: 11px;">Get help regarding task submissions</p>
+                    </div>
+                    <span class="support-link">@Megacoin16</span>
+                </a>
+
+                <a href="https://t.me/Megacoin15" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
+                    <div>
+                        <p style="color: #fff; font-weight: 600;">Promotion & Withdrawal</p>
+                        <p style="font-size: 11px;">Issues with payouts or promos</p>
+                    </div>
+                    <span class="support-link">@Megacoin15</span>
+                </a>
+
+                <a href="https://t.me/Megacoin17" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
+                    <div>
+                        <p style="color: #fff; font-weight: 600;">Any Questions / Support</p>
+                        <p style="font-size: 11px;">General assistance & inquiries</p>
+                    </div>
+                    <span class="support-link">@Megacoin17</span>
+                </a>
             </div>
         </div>
 
@@ -268,71 +391,65 @@
                 <h2>Earn Tasks 📋</h2>
             </div>
             
-            <!-- Tasks Category Tabs (Daily, Email, YouTube) -->
             <div class="tab-header">
                 <div class="tab-btn active" onclick="switchTaskCategory('Daily Task', this)">Daily Tasks</div>
                 <div class="tab-btn" onclick="switchTaskCategory('Email Create Task', this)">Email Tasks</div>
-                <div class="tab-btn" onclick="switchTaskCategory('YouTube Watch', this)">YouTube Watch</div>
+                <div class="tab-btn" onclick="switchTaskCategory('YouTube Watch', this)">YouTube</div>
             </div>
 
-            <!-- Tasks List View -->
             <div id="tasks-list-view">
                 <div id="tasks-container">
                     <p style="text-align:center; color:var(--text-secondary);">Loading tasks...</p>
                 </div>
             </div>
 
-            <!-- Job Detail & Submission View -->
             <div id="job-detail-view">
-                <button class="btn btn-secondary" style="margin-bottom: 15px; width: auto; padding: 8px 14px; font-size: 12px;" onclick="backToTasksList()">← Back to Tasks</button>
+                <button class="btn btn-secondary" style="margin-bottom: 14px; width: auto; padding: 6px 12px; font-size: 12px;" onclick="backToTasksList()">← Back</button>
                 
                 <div class="card">
-                    <h3 id="detail-task-title" style="color: var(--accent-color);">Job Description</h3>
-                    <p style="margin-bottom: 10px;"><b>Reward:</b> <span id="detail-task-reward" style="font-weight: 800; color: var(--accent-color);">0</span> MC</p>
+                    <h3 id="detail-task-title" style="color: var(--accent-orange);">Job Description</h3>
+                    <p style="margin-bottom: 10px;"><b>Reward:</b> <span id="detail-task-reward" style="font-weight: 800; color: var(--accent-orange);">0</span> MC</p>
                     
-                    <!-- Dedicated Task Link Buttons Container (Multiple Links Support) -->
-                    <div id="detail-link-container" style="margin-bottom: 15px;"></div>
+                    <div id="detail-link-container" style="margin-bottom: 12px;"></div>
 
                     <div class="job-instruction-box" id="detail-task-instructions">
                         Loading instructions...
                     </div>
 
-                    <h3 style="font-size: 14px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 12px;">Submit Your Work</h3>
-                    
-                    <label>Submission Comment / Proof (e.g. YouTube Username & Details)</label>
-                    <textarea id="submission-comment" rows="4" placeholder="Please describe your work or provide your account username and details..."></textarea>
+                    <label>Submission Details / Proof</label>
+                    <textarea id="submission-comment" rows="3" placeholder="Describe your work or provide account details..."></textarea>
 
-                    <button class="btn" onclick="submitTaskProof()">Submit task</button>
+                    <button class="btn" onclick="submitTaskProof()">Submit Task</button>
                 </div>
             </div>
         </div>
 
-        <!-- WALLET PAGE -->
+        <!-- WALLET PAGE (WITHDRAWAL GATEWAY) -->
         <div id="wallet" class="page">
             <div class="header">
-                <h2>Withdrawal Portal 👛</h2>
+                <h2>Withdrawal Gateway 👛</h2>
             </div>
-            <div class="balance-card">
-                <p>Withdrawable Balance</p>
-                <h1 id="wallet-balance">0.00 MC</h1>
-                <div id="wallet-balance-usd" class="conversion-text" style="font-weight: 700; margin-top: 4px; color: var(--accent-color);">$0.00 USD</div>
-                <div class="conversion-text" style="margin-top: 6px;">Min Withdraw: 30,000 MC ($3)</div>
+            
+            <div class="card" style="text-align: center; background: linear-gradient(135deg, #1b2230 0%, #121722 100%);">
+                <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Withdrawable Balance</p>
+                <h1 id="wallet-balance" style="margin: 6px 0; font-size: 28px; color: #fff;">0.00 MC</h1>
+                <div id="wallet-balance-usd" style="color: var(--accent-green); font-size: 12px; font-weight: 700;">≈ $0.0000 USDT</div>
             </div>
+
             <div class="card">
-                <label>Select Payment Method</label>
-                <select id="pay-method">
-                    <option value="USDT_BEP20">USDT (BEP20)</option>
-                    <option value="Telebirr">Telebirr</option>
-                    <option value="CBE">CBE</option>
+                <label>Choose Gateway</label>
+                <select id="pay-method" style="margin-bottom: 14px;">
+                    <option value="USDT_BEP20">USDT BEP20 (Direct to your BSC wallet)</option>
+                    <option value="Telebirr">Telebirr (Direct to your Telebirr account)</option>
                 </select>
 
                 <label>Wallet Address / Account Number</label>
-                <input type="text" id="pay-account" placeholder="Account number">
+                <input type="text" id="pay-account" placeholder="Enter wallet address or account number">
 
-                <label>Withdrawal Amount</label>
-                <input type="number" id="pay-amount" placeholder="e.g. 30000">
+                <label>Withdrawal Amount (MC)</label>
+                <input type="number" id="pay-amount" placeholder="Min 30,000 MC">
 
-                <button class="btn" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
+                <button class="btn" style="background: var(--accent-green-gradient); color: #0b0d12; font-weight: 800;" onclick="requestWithdrawal()">Proceed Withdrawal</button>
             </div>
         </div>
 
@@ -342,15 +459,15 @@
                 <h2>Activity History 🕒</h2>
             </div>
             <div class="tab-header">
-                <div class="tab-btn active" onclick="switchHistoryTab('tasks')">Task Submissions</div>
-                <div class="tab-btn" onclick="switchHistoryTab('withdrawals')">Withdrawal Logs</div>
+                <div class="tab-btn active" onclick="switchHistoryTab('tasks')">Tasks History</div>
+                <div class="tab-btn" onclick="switchHistoryTab('withdrawals')">Withdrawals</div>
             </div>
             <div id="history-tasks-list"></div>
             <div id="history-withdrawals-list" style="display: none;"></div>
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <div class="nav-bar">
         <button class="nav-item active" onclick="switchPage('home', this)"><span>🏠</span>Home</button>
         <button class="nav-item" onclick="switchPage('tasks', this)"><span>📋</span>Tasks</button>
@@ -367,12 +484,12 @@
         tg.expand();
 
         let userTelegramId = tg.initDataUnsafe?.user?.id || 123456789; 
-        let userName = tg.initDataUnsafe?.user?.username || 'MegaUser';
+        let userName = tg.initDataUnsafe?.user?.username || 'Gasnaw';
         document.getElementById('username').innerText = '@' + userName;
 
         let currentBalance = 0;
         let activeSelectedTask = null;
-        let currentTaskCategory = 'Daily Task'; // Default active category
+        let currentTaskCategory = 'Daily Task';
 
         async function fetchUserData() {
             let { data } = await supabaseClient
@@ -392,9 +509,9 @@
                 currentBalance = data.balance || 0;
             }
 
-            let usdValue = (currentBalance / 10000).toFixed(3);
-            let balanceText = currentBalance.toFixed(2) + " MC";
-            let usdText = `($${usdValue})`;
+            let usdValue = (currentBalance / 10000).toFixed(4);
+            let balanceText = currentBalance.toLocaleString() + " MC";
+            let usdText = `🟢 ≈ $${usdValue} USDT`;
 
             document.getElementById('user-balance').innerText = balanceText;
             document.getElementById('user-balance-usd').innerText = usdText;
@@ -441,7 +558,7 @@
                 html += `
                     <div class="card">
                         <h3>${task.task_name}</h3>
-                        <p style="margin-bottom: 12px;"><b>Reward:</b> <span style="font-weight: 800; color: var(--accent-color);">+${task.reward} MC</span></p>
+                        <p style="margin-bottom: 10px;"><b>Reward:</b> <span style="font-weight: 800; color: var(--accent-orange);">+${task.reward} MC</span></p>
                         ${btnHtml}
                     </div>
                 `;
@@ -468,8 +585,8 @@
                         a.href = linkUrl.trim();
                         a.target = '_blank';
                         a.className = 'btn';
-                        a.style.cssText = 'background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; margin-top: 5px; text-decoration: none; display: block;';
-                        a.innerText = `🔗 Open Task Link ${index + 1} / Download`;
+                        a.style.cssText = 'background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; margin-top: 5px; text-decoration: none; display: block; box-shadow: none;';
+                        a.innerText = `🔗 Open Link ${index + 1}`;
                         linkContainer.appendChild(a);
                     }
                 });
@@ -488,7 +605,7 @@
             let commentText = document.getElementById('submission-comment').value.trim();
 
             if (!commentText) {
-                alert('Please describe your work or provide your account username and details!');
+                alert('Please provide proof or details!');
                 return;
             }
 
@@ -508,7 +625,7 @@
                 return;
             }
 
-            alert('Task submitted successfully! Waiting for admin approval.');
+            alert('Task submitted successfully!');
             backToTasksList();
             loadTasks();
             fetchHistory();
@@ -526,18 +643,17 @@
                 tasks.forEach(t => {
                     let st = (t.status || 'pending').toLowerCase();
                     taskListHTML += `
-                        <div class="card" style="padding: 14px 18px; margin-bottom: 10px;">
+                        <div class="card" style="padding: 12px 16px; margin-bottom: 10px;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h3 style="margin:0; font-size:14px;">${t.task_name}</h3>
+                                <h3 style="margin:0; font-size:13px;">${t.task_name}</h3>
                                 <span class="status-badge status-${st}">${st}</span>
                             </div>
-                            <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">Reward: <span style="font-weight: 800; color: var(--accent-color);">+${t.reward_amount} MC</span></p>
-                            ${t.proof_detail ? `<p style="margin:4px 0 0 0; font-size:11px; color:#9ca3af; background:rgba(0,0,0,0.2); padding:6px; border-radius:6px;">Proof: ${t.proof_detail}</p>` : ''}
+                            <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-secondary);">Reward: <span style="font-weight: 700; color: var(--accent-orange);">+${t.reward_amount} MC</span></p>
                         </div>
                     `;
                 });
             } else {
-                taskListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No task history found.</p>';
+                taskListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No history found.</p>';
             }
             document.getElementById('history-tasks-list').innerHTML = taskListHTML;
 
@@ -552,10 +668,10 @@
                 withdrawals.forEach(w => {
                     let st = (w.status || 'pending').toLowerCase();
                     wdListHTML += `
-                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
+                        <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 10px;">
                             <div>
-                                <h3 style="margin:0; font-size:14px;">Withdrawal (${w.payment_method})</h3>
-                                <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
+                                <h3 style="margin:0; font-size:13px;">Withdrawal (${w.payment_method})</h3>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--text-secondary);">${w.amount_mc} MC</p>
                             </div>
                             <div>
                                 <span class="status-badge status-${st}">${st}</span>
@@ -575,7 +691,7 @@
             let account = document.getElementById('pay-account').value;
 
             if (!amount || amount < 30000) {
-                alert('Minimum withdrawal requirement is 30,000 MC ($3)!');
+                alert('Minimum withdrawal requirement is 30,000 MC!');
                 return;
             }
             if (amount > currentBalance) {
@@ -583,7 +699,7 @@
                 return;
             }
             if (!account) {
-                alert('Please enter your account details!');
+                alert('Please enter your account number or wallet address!');
                 return;
             }
 
