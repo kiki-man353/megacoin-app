@@ -447,7 +447,7 @@
                 <input type="text" id="pay-account" placeholder="Enter wallet address or account number">
 
                 <label>Withdrawal Amount (MC)</label>
-                <input type="number" id="pay-amount" placeholder="Min 30,000 MC">
+                <input type="number" id="pay-amount" placeholder="Min 75,000 MC (≈ $7.50)">
 
                 <button class="btn" style="background: var(--accent-green-gradient); color: #0b0d12; font-weight: 800;" onclick="requestWithdrawal()">Proceed Withdrawal</button>
             </div>
@@ -690,8 +690,8 @@
             let method = document.getElementById('pay-method').value;
             let account = document.getElementById('pay-account').value;
 
-            if (!amount || amount < 30000) {
-                alert('Minimum withdrawal requirement is 30,000 MC!');
+            if (!amount || amount < 75000) {
+                alert('Minimum withdrawal requirement is 75,000 MC ($7.50)!');
                 return;
             }
             if (amount > currentBalance) {
