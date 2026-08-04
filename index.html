@@ -24,7 +24,6 @@
             --danger-color: #ef4444;
         }
 
-        /* Moving Stars Background Canvas */
         #stars-canvas {
             position: fixed;
             top: 0;
@@ -203,17 +202,10 @@
             border-bottom: 1px solid var(--border-color);
             text-decoration: none;
             color: inherit;
-            transition: background 0.2s;
         }
 
-        .support-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .support-item:first-child {
-            padding-top: 0;
-        }
+        .support-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .support-item:first-child { padding-top: 0; }
 
         .support-link {
             color: var(--accent-orange);
@@ -241,7 +233,6 @@
             text-decoration: none;
             display: inline-block;
             box-shadow: 0 5px 20px rgba(255, 85, 0, 0.3);
-            transition: transform 0.1s ease;
         }
 
         .btn:active { transform: scale(0.98); }
@@ -260,7 +251,6 @@
             font-weight: 800;
             text-transform: uppercase;
             display: inline-block;
-            letter-spacing: 0.5px;
         }
         .status-pending { background: rgba(245, 158, 11, 0.18); color: var(--pending-color); border: 1px solid rgba(245, 158, 11, 0.35); }
         .status-approved { background: rgba(0, 210, 106, 0.18); color: var(--success-color); border: 1px solid rgba(0, 210, 106, 0.35); }
@@ -292,7 +282,6 @@
             box-sizing: border-box;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus, textarea:focus, select:focus {
@@ -334,41 +323,21 @@
             flex: 1;
             padding: 4px 0;
             font-weight: 700;
-            transition: color 0.2s, transform 0.2s;
         }
 
-        .nav-item span {
-            font-size: 22px;
-            display: block;
-            margin-bottom: 3px;
-            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-        }
-
-        .nav-item.active {
-            color: var(--accent-orange);
-            transform: translateY(-2px);
-        }
-        
-        .nav-item.active span {
-            filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.8));
-        }
+        .nav-item span { font-size: 22px; display: block; margin-bottom: 3px; }
+        .nav-item.active { color: var(--accent-orange); }
 
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.3s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .page.active { display: block; }
 
         .tab-header { display: flex; gap: 8px; margin-bottom: 16px; }
-        .tab-btn { flex: 1; padding: 12px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 14px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.2s; }
-        .tab-btn.active { background: var(--accent-orange-gradient); color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(255, 85, 0, 0.35); }
+        .tab-btn { flex: 1; padding: 12px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 14px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: var(--accent-orange-gradient); color: #fff; border-color: transparent; }
     </style>
 </head>
 <body>
 
-    <!-- Moving Starfield Canvas -->
     <canvas id="stars-canvas"></canvas>
 
     <div class="container">
@@ -382,7 +351,7 @@
             <div class="hero-section">
                 <div class="hero-logo">🪙</div>
                 <div class="coin-name">MEGACOIN</div>
-                <h1 id="user-balance" style="margin: 6px 0; font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">0.00 MC</h1>
+                <h1 id="user-balance" style="margin: 6px 0; font-size: 36px; font-weight: 900; color: #fff;">0.00 MC</h1>
                 <div>
                     <span id="user-balance-usd" class="usd-pill">🟢 ≈ $0.0000 USDT</span>
                 </div>
@@ -397,31 +366,18 @@
                 </button>
             </div>
 
-            <!-- Customer Support Card -->
             <div class="card">
-                <h3 style="margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">🎧 Customer Support</h3>
-                
+                <h3 style="margin-bottom: 14px;">🎧 Customer Support</h3>
                 <a href="https://t.me/Megacoin16" target="_blank" class="support-item">
-                    <div>
-                        <p style="color: #fff; font-weight: 700;">Task Problem</p>
-                        <p style="font-size: 11px;">Get help regarding task submissions</p>
-                    </div>
+                    <div><p style="color: #fff; font-weight: 700;">Task Problem</p></div>
                     <span class="support-link">@Megacoin16</span>
                 </a>
-
                 <a href="https://t.me/Megacoin15" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
-                    <div>
-                        <p style="color: #fff; font-weight: 700;">Promotion & Withdrawal</p>
-                        <p style="font-size: 11px;">Issues with payouts or promos</p>
-                    </div>
+                    <div><p style="color: #fff; font-weight: 700;">Promotion & Withdrawal</p></div>
                     <span class="support-link">@Megacoin15</span>
                 </a>
-
                 <a href="https://t.me/Megacoin17" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
-                    <div>
-                        <p style="color: #fff; font-weight: 700;">Any Questions / Support</p>
-                        <p style="font-size: 11px;">General assistance & inquiries</p>
-                    </div>
+                    <div><p style="color: #fff; font-weight: 700;">Any Questions / Support</p></div>
                     <span class="support-link">@Megacoin17</span>
                 </a>
             </div>
@@ -429,77 +385,54 @@
 
         <!-- TASKS PAGE -->
         <div id="tasks" class="page">
-            <div class="header">
-                <h2>Earn Tasks 📋</h2>
-            </div>
-            
+            <div class="header"><h2>Earn Tasks 📋</h2></div>
             <div class="tab-header">
                 <div class="tab-btn active" onclick="switchTaskCategory('Daily Task', this)">Daily Tasks</div>
                 <div class="tab-btn" onclick="switchTaskCategory('Email Create Task', this)">Email Tasks</div>
                 <div class="tab-btn" onclick="switchTaskCategory('YouTube Watch', this)">YouTube</div>
             </div>
-
             <div id="tasks-list-view">
-                <div id="tasks-container">
-                    <p style="text-align:center; color:var(--text-secondary); padding: 20px;">Loading tasks...</p>
-                </div>
+                <div id="tasks-container"><p style="text-align:center; color:var(--text-secondary); padding: 20px;">Loading tasks...</p></div>
             </div>
-
             <div id="job-detail-view">
                 <button class="btn btn-secondary" style="margin-bottom: 14px; width: auto; padding: 8px 14px; font-size: 12px;" onclick="backToTasksList()">← Back</button>
-                
                 <div class="card">
                     <h3 id="detail-task-title" style="color: var(--accent-orange);">Job Description</h3>
                     <p style="margin-bottom: 12px;"><b>Reward:</b> <span id="detail-task-reward" style="font-weight: 800; color: var(--accent-orange);">0</span> MC</p>
-                    
                     <div id="detail-link-container" style="margin-bottom: 12px;"></div>
-
-                    <div class="job-instruction-box" id="detail-task-instructions">
-                        Loading instructions...
-                    </div>
-
+                    <div class="job-instruction-box" id="detail-task-instructions">Loading...</div>
                     <label>Submission Details / Proof</label>
-                    <textarea id="submission-comment" rows="3" placeholder="Describe your work or provide account details..."></textarea>
-
+                    <textarea id="submission-comment" rows="3" placeholder="Provide proof..."></textarea>
                     <button class="btn" onclick="submitTaskProof()">Submit Task</button>
                 </div>
             </div>
         </div>
 
-        <!-- WALLET PAGE (WITHDRAWAL GATEWAY) -->
+        <!-- WALLET PAGE -->
         <div id="wallet" class="page">
-            <div class="header">
-                <h2>Withdrawal Gateway 👛</h2>
-            </div>
-            
-            <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(27, 34, 48, 0.95) 0%, rgba(18, 23, 34, 0.95) 100%);">
-                <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;">Withdrawable Balance</p>
+            <div class="header"><h2>Withdrawal Gateway 👛</h2></div>
+            <div class="card" style="text-align: center;">
+                <p style="font-size: 11px; text-transform: uppercase;">Withdrawable Balance</p>
                 <h1 id="wallet-balance" style="margin: 6px 0; font-size: 30px; color: #fff; font-weight: 800;">0.00 MC</h1>
                 <div id="wallet-balance-usd" style="color: var(--accent-green); font-size: 13px; font-weight: 700;">≈ $0.0000 USDT</div>
             </div>
-
             <div class="card">
                 <label>Choose Gateway</label>
                 <select id="pay-method" style="margin-bottom: 14px;">
-                    <option value="USDT_BEP20">USDT BEP20 (Direct to your BSC wallet)</option>
-                    <option value="Telebirr">Telebirr (Direct to your Telebirr account)</option>
+                    <option value="USDT_BEP20">USDT BEP20</option>
+                    <option value="Telebirr">Telebirr</option>
                 </select>
-
                 <label>Wallet Address / Account Number</label>
-                <input type="text" id="pay-account" placeholder="Enter wallet address or account number">
-
+                <input type="text" id="pay-account" placeholder="Enter account/address">
                 <label>Withdrawal Amount (MC)</label>
-                <input type="number" id="pay-amount" placeholder="Min 75,000 MC (≈ $7.50)">
-
+                <input type="number" id="pay-amount" placeholder="Min 75,000 MC">
                 <button class="btn" style="background: var(--accent-green-gradient); color: #07090f; font-weight: 800;" onclick="requestWithdrawal()">Proceed Withdrawal</button>
             </div>
         </div>
 
         <!-- HISTORY PAGE -->
         <div id="history" class="page">
-            <div class="header">
-                <h2>Activity History 🕒</h2>
-            </div>
+            <div class="header"><h2>Activity History 🕒</h2></div>
             <div class="tab-header">
                 <div class="tab-btn active" onclick="switchHistoryTab('tasks')">Tasks History</div>
                 <div class="tab-btn" onclick="switchHistoryTab('withdrawals')">Withdrawals</div>
@@ -509,7 +442,6 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
     <div class="nav-bar">
         <button class="nav-item active" onclick="switchPage('home', this)"><span>🏠</span>Home</button>
         <button class="nav-item" onclick="switchPage('tasks', this)"><span>📋</span>Tasks</button>
@@ -518,7 +450,6 @@
     </div>
 
     <script>
-        // Moving Stars Animation Background
         const canvas = document.getElementById('stars-canvas');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -546,21 +477,19 @@
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
                 star.y -= star.speed;
-                if (star.y < 0) {
-                    star.y = height;
-                    star.x = Math.random() * width;
-                }
+                if (star.y < 0) { star.y = height; star.x = Math.random() * width; }
                 star.alpha += (Math.random() - 0.5) * 0.05;
-                if (star.alpha < 0.2) star.alpha = 0.2;
-                if (star.alpha > 1) star.alpha = 1;
             });
             requestAnimationFrame(animateStars);
         }
         animateStars();
 
-        // App Logic
+        // -----------------------------------------------------------------
+        // አዲሱ የተጠበቀው የ Supabase ኪይ (Secure New Key)
+        // -----------------------------------------------------------------
         const SUPABASE_URL = 'https://xqxnpdqzsnlmeltyuucg.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxeG5wZHF6c25sbWVsdHl1dWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NDI0NjksImV4cCI6MjEwMTAxODQ2OX0.1AYsGB2Pi1vUp1Q9tLCX8qF0zbvh-lFgHpsDBpbUphA';
+        const SUPABASE_ANON_KEY = 'sb_publishable_K9vhK_G1URFC7IOPp8TSNQ_SG8lt77n';
+        
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let tg = window.Telegram.WebApp;
@@ -598,7 +527,6 @@
 
             document.getElementById('user-balance').innerText = balanceText;
             document.getElementById('user-balance-usd').innerText = usdText;
-
             document.getElementById('wallet-balance').innerText = balanceText;
             document.getElementById('wallet-balance-usd').innerText = usdText;
 
@@ -608,8 +536,7 @@
 
         function switchTaskCategory(category, element) {
             currentTaskCategory = category;
-            let parentContainer = element.parentElement;
-            parentContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            element.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
             loadTasks();
         }
@@ -620,7 +547,7 @@
 
             let container = document.getElementById('tasks-container');
             if (!allTasks || allTasks.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No available tasks in ${currentTaskCategory}.</p>`;
+                container.innerHTML = `<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No available tasks.</p>`;
                 return;
             }
 
@@ -632,9 +559,9 @@
 
                 if (sub) {
                     let st = (sub.status || '').toLowerCase();
-                    if (st === 'approved' || st === 'pending' || st === 'rejected') {
-                        let statusColor = st === 'approved' ? 'var(--success-color)' : (st === 'pending' ? 'var(--pending-color)' : 'var(--danger-color)');
-                        btnHtml = `<button class="btn" style="background: rgba(255, 255, 255, 0.05); color: ${statusColor}; border: 1px solid ${statusColor}; cursor: default; box-shadow: none;" disabled>📌 ${st.toUpperCase()}</button>`;
+                    if (['approved', 'pending', 'rejected'].includes(st)) {
+                        let color = st === 'approved' ? 'var(--success-color)' : (st === 'pending' ? 'var(--pending-color)' : 'var(--danger-color)');
+                        btnHtml = `<button class="btn" style="background: rgba(255, 255, 255, 0.05); color: ${color}; border: 1px solid ${color}; cursor: default; box-shadow: none;" disabled>📌 ${st.toUpperCase()}</button>`;
                     }
                 }
 
@@ -654,22 +581,20 @@
             activeSelectedTask = task;
             document.getElementById('detail-task-title').innerText = task.task_name;
             document.getElementById('detail-task-reward').innerText = `+${task.reward} MC`;
-            document.getElementById('detail-task-instructions').innerText = task.description || "No instructions provided.";
+            document.getElementById('detail-task-instructions').innerText = task.description || "No instructions.";
             document.getElementById('submission-comment').value = '';
 
             let linkContainer = document.getElementById('detail-link-container');
             linkContainer.innerHTML = '';
-
             if (task.link && task.link.trim() !== '') {
-                let linksArray = task.link.split(' | ');
-                linksArray.forEach((linkUrl, index) => {
-                    if (linkUrl.trim() !== '') {
+                task.link.split(' | ').forEach((linkUrl, i) => {
+                    if (linkUrl.trim()) {
                         let a = document.createElement('a');
                         a.href = linkUrl.trim();
                         a.target = '_blank';
                         a.className = 'btn';
-                        a.style.cssText = 'background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; margin-top: 5px; text-decoration: none; display: block; box-shadow: none;';
-                        a.innerText = `🔗 Open Link ${index + 1}`;
+                        a.style.cssText = 'background: #3b82f6; color: #fff; margin-top: 5px; display: block; box-shadow: none;';
+                        a.innerText = `🔗 Open Link ${i + 1}`;
                         linkContainer.appendChild(a);
                     }
                 });
@@ -686,15 +611,10 @@
 
         async function submitTaskProof() {
             let commentText = document.getElementById('submission-comment').value.trim();
-
-            if (!commentText) {
-                alert('Please provide proof or details!');
-                return;
-            }
-
+            if (!commentText) { alert('Please provide proof!'); return; }
             if (!activeSelectedTask) return;
 
-            let { error: insertError } = await supabaseClient.from('task_submissions').insert([{ 
+            await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId,
                 username: userName,
                 task_name: activeSelectedTask.task_name, 
@@ -703,11 +623,6 @@
                 status: 'PENDING'
             }]);
 
-            if (insertError) {
-                alert('Error submitting task: ' + insertError.message);
-                return;
-            }
-
             alert('Task submitted successfully!');
             backToTasksList();
             loadTasks();
@@ -715,12 +630,7 @@
         }
 
         async function fetchHistory() {
-            let { data: tasks } = await supabaseClient
-                .from('task_submissions')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .order('created_at', { ascending: false });
-
+            let { data: tasks } = await supabaseClient.from('task_submissions').select('*').eq('telegram_id', userTelegramId).order('created_at', { ascending: false });
             let taskListHTML = '';
             if (tasks && tasks.length > 0) {
                 tasks.forEach(t => {
@@ -731,21 +641,14 @@
                                 <h3 style="margin:0; font-size:14px;">${t.task_name}</h3>
                                 <span class="status-badge status-${st}">${st}</span>
                             </div>
-                            <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">Reward: <span style="font-weight: 700; color: var(--accent-orange);">+${t.reward_amount} MC</span></p>
+                            <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">Reward: +${t.reward_amount} MC</p>
                         </div>
                     `;
                 });
-            } else {
-                taskListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No history found.</p>';
-            }
+            } else { taskListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No history.</p>'; }
             document.getElementById('history-tasks-list').innerHTML = taskListHTML;
 
-            let { data: withdrawals } = await supabaseClient
-                .from('withdrawals')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .order('created_at', { ascending: false });
-
+            let { data: withdrawals } = await supabaseClient.from('withdrawals').select('*').eq('telegram_id', userTelegramId).order('created_at', { ascending: false });
             let wdListHTML = '';
             if (withdrawals && withdrawals.length > 0) {
                 withdrawals.forEach(w => {
@@ -756,15 +659,11 @@
                                 <h3 style="margin:0; font-size:14px;">Withdrawal (${w.payment_method})</h3>
                                 <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
                             </div>
-                            <div>
-                                <span class="status-badge status-${st}">${st}</span>
-                            </div>
+                            <span class="status-badge status-${st}">${st}</span>
                         </div>
                     `;
                 });
-            } else {
-                wdListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No withdrawal history found.</p>';
-            }
+            } else { wdListHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">No withdrawals.</p>'; }
             document.getElementById('history-withdrawals-list').innerHTML = wdListHTML;
         }
 
@@ -773,20 +672,11 @@
             let method = document.getElementById('pay-method').value;
             let account = document.getElementById('pay-account').value;
 
-            if (!amount || amount < 75000) {
-                alert('Minimum withdrawal requirement is 75,000 MC ($7.50)!');
-                return;
-            }
-            if (amount > currentBalance) {
-                alert('Insufficient balance!');
-                return;
-            }
-            if (!account) {
-                alert('Please enter your account number or wallet address!');
-                return;
-            }
+            if (!amount || amount < 75000) { alert('Minimum is 75,000 MC ($7.50)!'); return; }
+            if (amount > currentBalance) { alert('Insufficient balance!'); return; }
+            if (!account) { alert('Please enter account/address!'); return; }
 
-            let { error: wdError } = await supabaseClient.from('withdrawals').insert([{
+            await supabaseClient.from('withdrawals').insert([{
                 telegram_id: userTelegramId,
                 amount_mc: amount,
                 payment_method: method,
@@ -794,15 +684,10 @@
                 status: 'PENDING'
             }]);
 
-            if (wdError) {
-                alert('Error: ' + wdError.message);
-                return;
-            }
-
             currentBalance -= amount;
             await supabaseClient.from('users').update({ balance: currentBalance }).eq('telegram_id', userTelegramId);
 
-            alert('Withdrawal request submitted successfully!');
+            alert('Withdrawal requested successfully!');
             document.getElementById('pay-amount').value = '';
             document.getElementById('pay-account').value = '';
             fetchUserData();
@@ -818,7 +703,6 @@
         function switchHistoryTab(tab) {
             let btns = document.querySelectorAll('.tab-btn');
             btns.forEach(b => b.classList.remove('active'));
-            
             if (tab === 'tasks') {
                 btns[0].classList.add('active');
                 document.getElementById('history-tasks-list').style.display = 'block';
