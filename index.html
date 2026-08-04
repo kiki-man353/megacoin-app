@@ -198,14 +198,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 4px 0;
             text-decoration: none;
             color: inherit;
         }
-
-        .support-item:last-child { border-bottom: none; padding-bottom: 0; }
-        .support-item:first-child { padding-top: 0; }
 
         .support-link {
             color: var(--accent-orange);
@@ -366,19 +362,15 @@
                 </button>
             </div>
 
+            <!-- Customer Support Card (Megacoin15 ብቻ የቀረበት) -->
             <div class="card">
-                <h3 style="margin-bottom: 14px;">🎧 Customer Support</h3>
-                <a href="https://t.me/Megacoin16" target="_blank" class="support-item">
-                    <div><p style="color: #fff; font-weight: 700;">Task Problem</p></div>
-                    <span class="support-link">@Megacoin16</span>
-                </a>
-                <a href="https://t.me/Megacoin15" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
-                    <div><p style="color: #fff; font-weight: 700;">Promotion & Withdrawal</p></div>
+                <h3 style="margin-bottom: 12px;">🎧 Customer Support</h3>
+                <a href="https://t.me/Megacoin15" target="_blank" class="support-item">
+                    <div>
+                        <p style="color: #fff; font-weight: 700;">Promotion & Withdrawal</p>
+                        <p style="font-size: 11px;">Issues with payouts or promos</p>
+                    </div>
                     <span class="support-link">@Megacoin15</span>
-                </a>
-                <a href="https://t.me/Megacoin17" target="_blank" class="support-item" style="margin-top: 10px; padding-top: 10px;">
-                    <div><p style="color: #fff; font-weight: 700;">Any Questions / Support</p></div>
-                    <span class="support-link">@Megacoin17</span>
                 </a>
             </div>
         </div>
@@ -484,9 +476,6 @@
         }
         animateStars();
 
-        // -----------------------------------------------------------------
-        // አዲሱ የተጠበቀው የ Supabase ኪይ (Secure New Key)
-        // -----------------------------------------------------------------
         const SUPABASE_URL = 'https://xqxnpdqzsnlmeltyuucg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_K9vhK_G1URFC7IOPp8TSNQ_SG8lt77n';
         
