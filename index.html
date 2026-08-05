@@ -422,7 +422,7 @@
                     <div class="job-instruction-box" id="detail-task-instructions">Loading...</div>
                     <label>Submission Details / Proof</label>
                     <textarea id="submission-comment" rows="3" placeholder="Provide proof..."></textarea>
-                    <button class="btn" onclick="submitTaskProof()">Submit Task</button>
+                    <button class="btn" id="submit-proof-btn" onclick="submitTaskProof()">Submit Task</button>
                 </div>
             </div>
         </div>
@@ -630,7 +630,28 @@
             if (!commentText) { alert('Please provide proof!'); return; }
             if (!activeSelectedTask) return;
 
-            await supabaseClient.from('task_submissions').insert([{ 
+            // Double click / multiple submission protection (Disable button immediately)
+            let submitBtn = document.getElementById('submit-proof-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+
+            // Check if already submitted before inserting (Double protection)
+            let { data: existingSub } = await supabaseClient
+                .from('task_submissions')
+                .select('id')
+                .eq('telegram_id', userTelegramId)
+                .eq('task_name', activeSelectedTask.task_name)
+                .maybeSingle();
+
+            if (existingSub) {
+                alert('You have already submitted this task!');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Task';
+                backToTasksList();
+                return;
+            }
+
+            let { error } = await supabaseClient.from('task_submissions').insert([{ 
                 telegram_id: userTelegramId,
                 username: userName,
                 task_name: activeSelectedTask.task_name, 
@@ -639,7 +660,16 @@
                 status: 'PENDING'
             }]);
 
+            if (error) {
+                alert('Error submitting task: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Task';
+                return;
+            }
+
             alert('Task submitted successfully!');
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Submit Task';
             backToTasksList();
             loadTasks();
             fetchHistory();
@@ -651,6 +681,8 @@
             if (tasks && tasks.length > 0) {
                 tasks.forEach(t => {
                     let st = (t.status || 'pending').toLowerCase();
+                    // Format timestamp cleanly
+                    let dateStr = t.created_at ? new Date(t.created_at).toLocaleString() : 'Just now';
                     taskListHTML += `
                         <div class="card" style="padding: 14px 18px; margin-bottom: 10px;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -658,6 +690,7 @@
                                 <span class="status-badge status-${st}">${st}</span>
                             </div>
                             <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">Reward: +${t.reward_amount} MC</p>
+                            <p style="margin:4px 0 0 0; font-size:11px; color:var(--accent-color);">🕒 Submitted on: ${dateStr}</p>
                         </div>
                     `;
                 });
@@ -669,11 +702,13 @@
             if (withdrawals && withdrawals.length > 0) {
                 withdrawals.forEach(w => {
                     let st = (w.status || 'pending').toLowerCase();
+                    let wdDateStr = w.created_at ? new Date(w.created_at).toLocaleString() : 'Just now';
                     wdListHTML += `
                         <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-bottom: 10px;">
                             <div>
                                 <h3 style="margin:0; font-size:14px;">Withdrawal (${w.payment_method})</h3>
                                 <p style="margin:6px 0 0 0; font-size:12px; color:var(--text-secondary);">${w.amount_mc} MC</p>
+                                <p style="margin:4px 0 0 0; font-size:11px; color:var(--accent-color);">🕒 ${wdDateStr}</p>
                             </div>
                             <span class="status-badge status-${st}">${st}</span>
                         </div>
