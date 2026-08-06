@@ -41,7 +41,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 80px;
+            padding-bottom: 70px;
             min-height: 100vh;
         }
 
@@ -323,18 +323,18 @@
             letter-spacing: 0.8px;
         }
 
-        /* የተስተካከለው የ Nav Bar ዲዛይን (የፊደል መጠን እና ቁመት ቀንሷል) */
+        /* የታችኛው Nav Bar (የተቀነሰ ቁመት እና 10px የፊደል መጠን) */
         .nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(10, 13, 19, 0.85);
+            background: rgba(10, 13, 19, 0.9);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding: 6px 0;
+            padding: 4px 0;
             border-top: 1px solid var(--border-color);
             z-index: 1000;
         }
@@ -352,14 +352,14 @@
             font-weight: 600;
         }
 
-        .nav-item span { font-size: 18px; display: block; margin-bottom: 2px; }
+        .nav-item span.icon { font-size: 16px; display: block; margin-bottom: 1px; }
         .nav-item.active { color: var(--accent-orange); }
 
         .page { display: none; }
         .page.active { display: block; }
 
         .tab-header { display: flex; gap: 8px; margin-bottom: 16px; }
-        .tab-btn { flex: 1; padding: 12px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 14px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
+        .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 14px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
         .tab-btn.active { background: var(--accent-orange-gradient); color: #fff; border-color: transparent; }
     </style>
 </head>
@@ -499,14 +499,13 @@
     </div>
 
     <div class="nav-bar">
-        <button class="nav-item active" onclick="switchPage('home', this)"><span>🏠</span><span data-i18n="navHome">Home</span></button>
-        <button class="nav-item" onclick="switchPage('tasks', this)"><span>📋</span><span data-i18n="navTasks">Tasks</span></button>
-        <button class="nav-item" onclick="switchPage('wallet', this)"><span>👛</span><span data-i18n="navWallet">Wallet</span></button>
-        <button class="nav-item" onclick="switchPage('history', this)"><span>🕒</span><span data-i18n="navHistory">History</span></button>
+        <button class="nav-item active" onclick="switchPage('home', this)"><span class="icon">🏠</span><span data-i18n="navHome">Home</span></button>
+        <button class="nav-item" onclick="switchPage('tasks', this)"><span class="icon">📋</span><span data-i18n="navTasks">Tasks</span></button>
+        <button class="nav-item" onclick="switchPage('wallet', this)"><span class="icon">👛</span><span data-i18n="navWallet">Wallet</span></button>
+        <button class="nav-item" onclick="switchPage('history', this)"><span class="icon">🕒</span><span data-i18n="navHistory">History</span></button>
     </div>
 
     <script>
-        // Dictionary for Translations
         const translations = {
             en: {
                 earnBtn: "⚡ EARN",
