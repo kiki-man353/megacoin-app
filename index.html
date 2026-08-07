@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaCoin Mini App</title>
+    <title>Gasnaw™ 🔥 MegaCoin Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -323,6 +323,38 @@
             letter-spacing: 0.8px;
         }
 
+        .gateway-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .gateway-card {
+            background: rgba(15, 19, 26, 0.6);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gateway-card.selected {
+            border-color: var(--accent-orange);
+            background: rgba(255, 85, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 85, 0, 0.2);
+        }
+
+        .gateway-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -471,14 +503,34 @@
             </div>
             <div class="card">
                 <label data-i18n="gatewayLabel">Choose Gateway</label>
-                <select id="pay-method" style="margin-bottom: 14px;">
-                    <option value="USDT_BEP20">USDT BEP20</option>
-                    <option value="Telebirr">Telebirr</option>
-                </select>
-                <label data-i18n="addressLabel">Wallet Address / Account Number</label>
-                <input type="text" id="pay-account" placeholder="Enter account/address">
+                
+                <!-- Gateway Selector Grid (Without Logos) -->
+                <div class="gateway-selector-grid">
+                    <div class="gateway-card selected" onclick="selectGateway('Telebirr', this)">
+                        <span class="gateway-name">Telebirr</span>
+                    </div>
+                    <div class="gateway-card" onclick="selectGateway('CBE', this)">
+                        <span class="gateway-name">CBE (Commercial)</span>
+                    </div>
+                    <div class="gateway-card" onclick="selectGateway('Dashen Bank', this)">
+                        <span class="gateway-name">Dashen Bank</span>
+                    </div>
+                    <div class="gateway-card" onclick="selectGateway('Abyssinia Bank', this)">
+                        <span class="gateway-name">Abyssinia Bank</span>
+                    </div>
+                    <div class="gateway-card" onclick="selectGateway('Awash Bank', this)" style="grid-column: span 2;">
+                        <span class="gateway-name">Awash Bank</span>
+                    </div>
+                </div>
+
+                <input type="hidden" id="pay-method" value="Telebirr">
+
+                <label id="account-label" data-i18n="addressLabel">Phone Number / Account Number</label>
+                <input type="text" id="pay-account" placeholder="Enter phone number or account">
+                
                 <label data-i18n="amountLabel">Withdrawal Amount (MC)</label>
                 <input type="number" id="pay-amount" placeholder="Min 75,000 MC">
+                
                 <button class="btn" style="background: var(--accent-green-gradient); color: #07090f; font-weight: 800;" onclick="requestWithdrawal()" data-i18n="proceedWithdrawBtn">Proceed Withdrawal</button>
             </div>
         </div>
@@ -530,8 +582,8 @@
                 submitTaskBtn: "Submit Task",
                 walletHeader: "Withdrawal Gateway 👛",
                 withdrawableBalance: "Withdrawable Balance",
-                gatewayLabel: "Choose Gateway",
-                addressLabel: "Wallet Address / Account Number",
+                gatewayLabel: "Choose Ethiopian Payment Method",
+                addressLabel: "Phone Number / Account Number",
                 amountLabel: "Withdrawal Amount (MC)",
                 proceedWithdrawBtn: "Proceed Withdrawal",
                 historyHeader: "Activity History 🕒",
@@ -568,7 +620,7 @@
                 walletHeader: "የገንዘብ ማውጫ 👛",
                 withdrawableBalance: "ሊወጣ የሚችል ቀሪ ሂሳብ",
                 gatewayLabel: "የክፍያ አማራጭ ይምረጡ",
-                addressLabel: "የዋሌት አድራሻ / የሂሳብ ቁጥር",
+                addressLabel: "የስልክ ቁጥር / የባንክ አካውንት ቁጥር",
                 amountLabel: "የሚወጣው መጠን (MC)",
                 proceedWithdrawBtn: "ገንዘብ ማውጣት",
                 historyHeader: "የእንቅስቃሴ ታሪክ 🕒",
@@ -644,6 +696,21 @@
         let currentBalance = 0;
         let activeSelectedTask = null;
         let currentTaskCategory = 'Daily Task';
+
+        function selectGateway(methodName, element) {
+            document.querySelectorAll('.gateway-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('pay-method').value = methodName;
+
+            let accountLabel = document.getElementById('account-label');
+            if (methodName === 'Telebirr') {
+                accountLabel.innerText = currentLang === 'am' ? 'የቴሌብር ስልክ ቁጥር' : 'Telebirr Phone Number';
+                document.getElementById('pay-account').placeholder = '09xxxxxxxx';
+            } else {
+                accountLabel.innerText = currentLang === 'am' ? 'የባንክ ሂሳብ ቁጥር' : 'Bank Account Number';
+                document.getElementById('pay-account').placeholder = 'Enter account number';
+            }
+        }
 
         async function fetchUserData() {
             let { data } = await supabaseClient
@@ -866,7 +933,7 @@
                 return; 
             }
             if (!account) { 
-                alert(currentLang === 'am' ? 'እባክዎ አድራሻ ወይም አካውንት ያስገቡ!' : 'Please enter account/address!'); 
+                alert(currentLang === 'am' ? 'እባክዎ አድራሻ ወይም አካውንት ያስገቡ!' : 'Please enter account/number!'); 
                 return; 
             }
 
